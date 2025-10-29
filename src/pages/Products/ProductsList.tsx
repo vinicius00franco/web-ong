@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productsService } from '../../services/products.service';
 import type { Product } from '../../types/product';
+import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
+import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
+import { EmptyState } from '../../components/EmptyState/EmptyState';
 
 export const ProductsList = () => {
   const navigate = useNavigate();
@@ -47,11 +50,11 @@ export const ProductsList = () => {
   };
 
   if (loading) {
-    return <div>Carregando produtos...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
-    return <div>Erro ao carregar produtos: {error}</div>;
+    return <ErrorMessage message={`Erro ao carregar produtos: ${error}`} />;
   }
 
   return (
@@ -62,7 +65,7 @@ export const ProductsList = () => {
       </div>
 
       {products.length === 0 ? (
-        <div className="alert alert-info">Nenhum produto encontrado.</div>
+        <EmptyState message="Nenhum produto encontrado." />
       ) : (
         <div className="row">
           {products.map((product) => (

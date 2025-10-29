@@ -52,7 +52,7 @@ describe('ProductsList', () => {
     vi.clearAllMocks();
   });
 
-  it('should render loading state initially', () => {
+  it('should render loading state initially', async () => {
     (productsService.getProducts as any).mockResolvedValueOnce({
       products: [],
       total: 0,
@@ -63,7 +63,10 @@ describe('ProductsList', () => {
 
     render(<ProductsList />);
 
-    expect(screen.getByText('Carregando produtos...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
   });
 
   it('should render products list when data is loaded', async () => {
