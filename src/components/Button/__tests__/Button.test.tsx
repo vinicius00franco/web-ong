@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, test, expect } from 'vitest';
 import Button from '../index';
+import '@testing-library/jest-dom';
 
 describe('Button Component', () => {
   // Test 1: Should render with default props
@@ -72,5 +73,13 @@ describe('Button Component', () => {
     const button = screen.getByRole('button');
     
     expect(button).toHaveAttribute('type', 'submit');
+  });
+
+  // Test 9: Should not have custom styles applied
+  test('should not have custom styles', () => {
+    render(<Button className="btn-custom">Custom</Button>);
+    const button = screen.getByRole('button');
+
+    expect(button).not.toHaveStyle('transition: all 0.2s ease-in-out');
   });
 });

@@ -55,30 +55,34 @@ export const ProductsList = () => {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>Produtos</h2>
-        <button onClick={handleCreateProduct}>Novo Produto</button>
+        <button className="btn btn-primary" onClick={handleCreateProduct}>Novo Produto</button>
       </div>
 
       {products.length === 0 ? (
-        <div>Nenhum produto encontrado.</div>
+        <div className="alert alert-info">Nenhum produto encontrado.</div>
       ) : (
-        <div style={{ display: 'grid', gap: '1rem' }}>
+        <div className="row">
           {products.map((product) => (
-            <div key={product.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '4px' }}>
-              <h3>{product.name}</h3>
-              <p>{product.description}</p>
-              <p><strong>Preço:</strong> R$ {product.price.toFixed(2).replace('.', ',')}</p>
-              <p><strong>Categoria:</strong> {product.category}</p>
-              <p><strong>Estoque:</strong> {product.stock_qty}</p>
-              <div style={{ marginTop: '1rem' }}>
-                <button onClick={() => handleEditProduct(product.id)} style={{ marginRight: '0.5rem' }}>
-                  Editar
-                </button>
-                <button onClick={() => handleDeleteProduct(product.id)} style={{ backgroundColor: '#dc3545', color: 'white' }}>
-                  Deletar
-                </button>
+            <div className="col-md-4 mb-4" key={product.id}>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">{product.name}</h5>
+                  <p className="card-text">{product.description}</p>
+                  <p className="card-text"><strong>Preço:</strong> R$ {product.price.toFixed(2).replace('.', ',')}</p>
+                  <p className="card-text"><strong>Categoria:</strong> {product.category}</p>
+                  <p className="card-text"><strong>Estoque:</strong> {product.stock_qty}</p>
+                  <div className="mt-auto">
+                    <button className="btn btn-secondary me-2" onClick={() => handleEditProduct(product.id)}>
+                      Editar
+                    </button>
+                    <button className="btn btn-danger" onClick={() => handleDeleteProduct(product.id)}>
+                      Deletar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
