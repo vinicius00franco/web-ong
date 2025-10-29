@@ -160,4 +160,27 @@ describe('ProductsList', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith('/ong/products/new');
   });
+
+  it('should have responsive classes for mobile and tablet layouts', async () => {
+    (productsService.getProducts as any).mockResolvedValueOnce({
+      products: mockProducts,
+      total: 2,
+      page: 1,
+      limit: 10,
+      totalPages: 1,
+    });
+
+    render(<ProductsList />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Product 1')).toBeInTheDocument();
+    });
+
+    const product1Card = screen.getByText('Test Product 1').closest('.card');
+    const productColumn = product1Card?.parentElement;
+
+    expect(productColumn).toHaveClass('col-12');
+    expect(productColumn).toHaveClass('col-sm-6');
+    expect(productColumn).toHaveClass('col-md-4');
+  });
 });
