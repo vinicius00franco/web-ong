@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productsService } from '../../services/products.service';
 import type { Product } from '../../types/product';
-import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
+import { ProductCard } from '../../components/ProductCard';
+import { ProductCardSkeleton } from '../../components/ProductCardSkeleton';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import ConfirmationModal from '../../components/ConfirmationModal';
@@ -61,10 +62,6 @@ export const ProductsList = () => {
     }
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
   if (error) {
     return <ErrorMessage message={`Erro ao carregar produtos: ${error}`} />;
   }
@@ -74,6 +71,7 @@ export const ProductsList = () => {
     { label: 'Dashboard', href: '/ong' },
     { label: 'Products', href: '/ong/products' },
   ];
+
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -82,33 +80,30 @@ export const ProductsList = () => {
         <button className="btn btn-primary" onClick={handleCreateProduct}>Novo Produto</button>
       </div>
 
-      {products.length === 0 ? (
+      {loading ? (
+        <div className="row">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div className="col-12 col-sm-6 col-md-4 mb-4" key={index}>
+              <ProductCardSkeleton />
+            </div>
+          ))}
+        </div>
+      ) : products.length === 0 ? (
         <EmptyState message="Nenhum produto encontrado." />
       ) : (
         <div className="row">
           {products.map((product) => (
             <div className="col-12 col-sm-6 col-md-4 mb-4" key={product.id}>
-              <div className="card">
-                <div className="card-body">
-                  <h5 className="card-title">{product.name}</h5>
-                  <p className="card-text">{product.description}</p>
-                  <p className="card-text"><strong>Preço:</strong> R$ {product.price.toFixed(2).replace('.', ',')}</p>
-                  <p className="card-text"><strong>Categoria:</strong> {product.category}</p>
-                  <p className="card-text"><strong>Estoque:</strong> {product.stock_qty}</p>
-                  <div className="mt-auto">
-                    <button className="btn btn-secondary me-2" onClick={() => handleEditProduct(product.id)}>
-                      Editar
-                    </button>
-                    <button className="btn btn-danger" onClick={() => handleDeleteConfirmation(product.id)}>
-                      Deletar
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ProductCard
+                product={product}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteConfirmation}
+              />
             </div>
           ))}
         </div>
       )}
+
       {isModalOpen && (
         <ConfirmationModal
           title="Confirmar exclusão"
@@ -120,6 +115,6 @@ export const ProductsList = () => {
           }}
         />
       )}
-    </div>
+    </>
   );
 };
