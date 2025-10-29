@@ -1,0 +1,76 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import { vi, describe, test, expect } from 'vitest';
+import Button from '../index';
+
+describe('Button Component', () => {
+  // Test 1: Should render with default props
+  test('renders button with default props', () => {
+    render(<Button>Click me</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveClass('btn', 'btn-primary');
+    expect(button).toHaveAttribute('type', 'button');
+    expect(button).not.toBeDisabled();
+  });
+
+  // Test 2: Should render with custom variant
+  test('renders button with custom variant', () => {
+    render(<Button variant="danger">Delete</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toHaveClass('btn', 'btn-danger');
+  });
+
+  // Test 3: Should render with custom size
+  test('renders button with custom size', () => {
+    render(<Button size="lg">Large Button</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toHaveClass('btn', 'btn-primary', 'btn-lg');
+  });
+
+  // Test 4: Should handle disabled state
+  test('renders disabled button', () => {
+    render(<Button disabled>Disabled</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toBeDisabled();
+  });
+
+  // Test 5: Should handle click events
+  test('handles click events', () => {
+    const handleClick = vi.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+    const button = screen.getByRole('button');
+    
+    fireEvent.click(button);
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  // Test 6: Should not call onClick when disabled
+  test('does not call onClick when disabled', () => {
+    const handleClick = vi.fn();
+    render(<Button onClick={handleClick} disabled>Disabled</Button>);
+    const button = screen.getByRole('button');
+    
+    fireEvent.click(button);
+    expect(handleClick).not.toHaveBeenCalled();
+  });
+
+  // Test 7: Should render with custom className
+  test('renders with custom className', () => {
+    render(<Button className="custom-class">Custom</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toHaveClass('btn', 'btn-primary', 'custom-class');
+  });
+
+  // Test 8: Should render with submit type
+  test('renders with submit type', () => {
+    render(<Button type="submit">Submit</Button>);
+    const button = screen.getByRole('button');
+    
+    expect(button).toHaveAttribute('type', 'submit');
+  });
+});
