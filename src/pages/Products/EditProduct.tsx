@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { productsService } from '../../services/products.service';
 import type { Product, UpdateProductData } from '../../types/product';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 export const EditProductPage = () => {
   const navigate = useNavigate();
@@ -52,8 +53,15 @@ export const EditProductPage = () => {
     return <div>Produto não encontrado</div>;
   }
 
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Dashboard', href: '/ong' },
+    { label: 'Products', href: '/ong/products' },
+    { label: 'Edit', href: `/ong/products/${id}/edit` },
+  ];
   return (
     <div>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <h1>Editar Produto</h1>
       <EditProductForm
         product={product}
