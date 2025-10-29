@@ -149,4 +149,30 @@ describe('ProductForm', () => {
       expect(screen.getByText('Preço é obrigatório')).toBeInTheDocument();
     });
   });
+
+  it('should have Bootstrap classes for responsive layout', () => {
+    render(<ProductForm onSuccess={mockOnSuccess} onCancel={mockOnCancel} />);
+
+    // Check for form-group or similar Bootstrap classes
+    const nameInput = screen.getByLabelText(/nome/i);
+    expect(nameInput.parentElement).toHaveClass('mb-3');
+
+    // Check for form-control class on inputs
+    expect(nameInput).toHaveClass('form-control');
+
+    const descriptionInput = screen.getByLabelText(/descrição/i);
+    expect(descriptionInput).toHaveClass('form-control');
+
+    const priceInput = screen.getByLabelText(/preço/i);
+    expect(priceInput).toHaveClass('form-control');
+
+    // Check for button classes
+    const submitButton = screen.getByRole('button', { name: /salvar/i });
+    expect(submitButton).toHaveClass('btn');
+    expect(submitButton).toHaveClass('btn-primary');
+
+    const cancelButton = screen.getByRole('button', { name: /cancelar/i });
+    expect(cancelButton).toHaveClass('btn');
+    expect(cancelButton).toHaveClass('btn-secondary');
+  });
 });

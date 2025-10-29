@@ -104,90 +104,97 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Nome</label>
+      <div className="mb-3">
+        <label htmlFor="name" className="form-label">Nome</label>
         <input
           id="name"
           type="text"
+          className="form-control"
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
         />
-        {errors.name && <span>{errors.name}</span>}
+        {errors.name && <div className="text-danger">{errors.name}</div>}
       </div>
 
-      <div>
-        <label htmlFor="description">Descrição</label>
+      <div className="mb-3">
+        <label htmlFor="description" className="form-label">Descrição</label>
         <textarea
           id="description"
+          className="form-control"
           value={formData.description}
           onChange={(e) => handleChange('description', e.target.value)}
         />
-        {errors.description && <span>{errors.description}</span>}
+        {errors.description && <div className="text-danger">{errors.description}</div>}
       </div>
 
-      <div>
-        <label htmlFor="price">Preço</label>
+      <div className="mb-3">
+        <label htmlFor="price" className="form-label">Preço</label>
         <input
           id="price"
           type="number"
           step="0.01"
+          className="form-control"
           value={formData.price || ''}
           onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
         />
-        {errors.price && <span>{errors.price}</span>}
+        {errors.price && <div className="text-danger">{errors.price}</div>}
       </div>
 
-      <div>
-        <label htmlFor="category">Categoria</label>
+      <div className="mb-3">
+        <label htmlFor="category" className="form-label">Categoria</label>
         <input
           id="category"
           type="text"
+          className="form-control"
           value={formData.category}
           onChange={(e) => handleChange('category', e.target.value)}
         />
-        {errors.category && <span>{errors.category}</span>}
+        {errors.category && <div className="text-danger">{errors.category}</div>}
       </div>
 
-      <div>
-        <label htmlFor="image_url">URL da Imagem</label>
+      <div className="mb-3">
+        <label htmlFor="image_url" className="form-label">URL da Imagem</label>
         <input
           id="image_url"
           type="url"
+          className="form-control"
           value={formData.image_url}
           onChange={(e) => handleChange('image_url', e.target.value)}
         />
-        {errors.image_url && <span>{errors.image_url}</span>}
+        {errors.image_url && <div className="text-danger">{errors.image_url}</div>}
       </div>
 
-      <div>
-        <label htmlFor="stock_qty">Quantidade em Estoque</label>
+      <div className="mb-3">
+        <label htmlFor="stock_qty" className="form-label">Quantidade em Estoque</label>
         <input
           id="stock_qty"
           type="number"
+          className="form-control"
           value={formData.stock_qty || ''}
           onChange={(e) => handleChange('stock_qty', parseInt(e.target.value) || 0)}
         />
-        {errors.stock_qty && <span>{errors.stock_qty}</span>}
+        {errors.stock_qty && <div className="text-danger">{errors.stock_qty}</div>}
       </div>
 
-      <div>
-        <label htmlFor="weight_grams">Peso em Gramas</label>
+      <div className="mb-3">
+        <label htmlFor="weight_grams" className="form-label">Peso em Gramas</label>
         <input
           id="weight_grams"
           type="number"
+          className="form-control"
           value={formData.weight_grams || ''}
           onChange={(e) => handleChange('weight_grams', parseInt(e.target.value) || 0)}
         />
-        {errors.weight_grams && <span>{errors.weight_grams}</span>}
+        {errors.weight_grams && <div className="text-danger">{errors.weight_grams}</div>}
       </div>
 
-      {submitError && <div>Erro ao salvar produto: {submitError}</div>}
+      {submitError && <div className="alert alert-danger">Erro ao salvar produto: {submitError}</div>}
 
       <div>
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" className="btn btn-primary me-2" disabled={isSubmitting}>
           {isSubmitting ? 'Salvando...' : 'Salvar'}
         </button>
-        <button type="button" onClick={onCancel}>
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>
           Cancelar
         </button>
       </div>

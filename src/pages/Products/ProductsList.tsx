@@ -69,7 +69,7 @@ export const ProductsList = () => {
       ) : (
         <div className="row">
           {products.map((product) => (
-            <div className="col-md-4 mb-4" key={product.id}>
+            <div className="col-12 col-sm-6 col-md-4 mb-4" key={product.id}>
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">{product.name}</h5>
