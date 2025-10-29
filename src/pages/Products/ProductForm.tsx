@@ -112,8 +112,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
+          aria-invalid={!!errors.name}
+          aria-describedby="name-error"
         />
-        {errors.name && <div className="text-danger">{errors.name}</div>}
+        {errors.name && <div id="name-error" className="text-danger" role="alert">{errors.name}</div>}
       </div>
 
       <div className="mb-3">
@@ -123,8 +125,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.description}
           onChange={(e) => handleChange('description', e.target.value)}
+          aria-invalid={!!errors.description}
+          aria-describedby="description-error"
         />
-        {errors.description && <div className="text-danger">{errors.description}</div>}
+        {errors.description && <div id="description-error" className="text-danger" role="alert">{errors.description}</div>}
       </div>
 
       <div className="mb-3">
@@ -136,8 +140,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.price || ''}
           onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
+          aria-invalid={!!errors.price}
+          aria-describedby="price-error"
         />
-        {errors.price && <div className="text-danger">{errors.price}</div>}
+        {errors.price && <div id="price-error" className="text-danger" role="alert">{errors.price}</div>}
       </div>
 
       <div className="mb-3">
@@ -148,8 +154,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.category}
           onChange={(e) => handleChange('category', e.target.value)}
+          aria-invalid={!!errors.category}
+          aria-describedby="category-error"
         />
-        {errors.category && <div className="text-danger">{errors.category}</div>}
+        {errors.category && <div id="category-error" className="text-danger" role="alert">{errors.category}</div>}
       </div>
 
       <div className="mb-3">
@@ -160,8 +168,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.image_url}
           onChange={(e) => handleChange('image_url', e.target.value)}
+          aria-invalid={!!errors.image_url}
+          aria-describedby="image_url-error"
         />
-        {errors.image_url && <div className="text-danger">{errors.image_url}</div>}
+        {errors.image_url && <div id="image_url-error" className="text-danger" role="alert">{errors.image_url}</div>}
       </div>
 
       <div className="mb-3">
@@ -172,8 +182,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.stock_qty || ''}
           onChange={(e) => handleChange('stock_qty', parseInt(e.target.value) || 0)}
+          aria-invalid={!!errors.stock_qty}
+          aria-describedby="stock_qty-error"
         />
-        {errors.stock_qty && <div className="text-danger">{errors.stock_qty}</div>}
+        {errors.stock_qty && <div id="stock_qty-error" className="text-danger" role="alert">{errors.stock_qty}</div>}
       </div>
 
       <div className="mb-3">
@@ -184,8 +196,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
           className="form-control"
           value={formData.weight_grams || ''}
           onChange={(e) => handleChange('weight_grams', parseInt(e.target.value) || 0)}
+          aria-invalid={!!errors.weight_grams}
+          aria-describedby="weight_grams-error"
         />
-        {errors.weight_grams && <div className="text-danger">{errors.weight_grams}</div>}
+        {errors.weight_grams && <div id="weight_grams-error" className="text-danger" role="alert">{errors.weight_grams}</div>}
       </div>
 
       {submitError && <div className="alert alert-danger">Erro ao salvar produto: {submitError}</div>}
