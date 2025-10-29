@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, test, expect } from 'vitest';
+import { axe } from 'jest-axe';
 import Button from '../index';
 import '@testing-library/jest-dom';
 
@@ -81,5 +82,31 @@ describe('Button Component', () => {
     const button = screen.getByRole('button');
 
     expect(button).not.toHaveStyle('transition: all 0.2s ease-in-out');
+  });
+
+  // Test 10: Should render with aria-label
+  test('renders button with aria-label', () => {
+    render(<Button ariaLabel="Close">X</Button>);
+    const button = screen.getByRole('button');
+
+    expect(button).toHaveAttribute('aria-label', 'Close');
+  });
+
+  // Test 11: Should render with aria-live region
+  test('renders with aria-live region when loading', () => {
+    render(<Button isLoading>Loading</Button>);
+    const button = screen.getByRole('button');
+    const liveRegion = button.querySelector('[aria-live="polite"]');
+
+    expect(liveRegion).toBeInTheDocument();
+    expect(liveRegion).toHaveClass('sr-only');
+  });
+
+  // Test 12: Should have no accessibility violations
+  test('should have no accessibility violations', async () => {
+    const { container } = render(<Button>Click me</Button>);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 });

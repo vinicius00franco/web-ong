@@ -8,6 +8,8 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
   className?: string;
+  ariaLabel?: string;
+  isLoading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,7 +19,9 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   type = 'button',
   onClick,
-  className = ''
+  className = '',
+  ariaLabel,
+  isLoading = false
 }) => {
   const baseClass = 'btn';
   const variantClass = `btn-${variant}`;
@@ -28,10 +32,18 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       className={classes}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       onClick={onClick}
+      aria-label={ariaLabel}
     >
-      {children}
+      {isLoading ? (
+        <>
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span className="sr-only" aria-live="polite">Loading...</span>
+        </>
+      ) : (
+        children
+      )}
     </button>
   );
 };
