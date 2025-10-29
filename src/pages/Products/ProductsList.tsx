@@ -5,12 +5,16 @@ import type { Product } from '../../types/product';
 import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
+import ConfirmationModal from '../../components/ConfirmationModal';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 export const ProductsList = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -36,15 +40,23 @@ export const ProductsList = () => {
     navigate(`/ong/products/${productId}/edit`);
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    if (window.confirm('Tem certeza que deseja deletar este produto?')) {
+  const handleDeleteConfirmation = (productId: string) => {
+    setProductToDelete(productId);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = async () => {
+    if (productToDelete) {
       try {
-        await productsService.deleteProduct(productId);
+        await productsService.deleteProduct(productToDelete);
         // Reload products after deletion
         const response = await productsService.getProducts();
         setProducts(response.products);
       } catch (err) {
         alert('Erro ao deletar produto: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
+      } finally {
+        setIsModalOpen(false);
+        setProductToDelete(null);
       }
     }
   };
@@ -57,8 +69,14 @@ export const ProductsList = () => {
     return <ErrorMessage message={`Erro ao carregar produtos: ${error}`} />;
   }
 
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Dashboard', href: '/ong' },
+    { label: 'Products', href: '/ong/products' },
+  ];
   return (
-    <div className="container mt-4">
+    <>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>Produtos</h2>
         <button className="btn btn-primary" onClick={handleCreateProduct}>Novo Produto</button>
@@ -81,7 +99,7 @@ export const ProductsList = () => {
                     <button className="btn btn-secondary me-2" onClick={() => handleEditProduct(product.id)}>
                       Editar
                     </button>
-                    <button className="btn btn-danger" onClick={() => handleDeleteProduct(product.id)}>
+                    <button className="btn btn-danger" onClick={() => handleDeleteConfirmation(product.id)}>
                       Deletar
                     </button>
                   </div>
@@ -90,6 +108,17 @@ export const ProductsList = () => {
             </div>
           ))}
         </div>
+      )}
+      {isModalOpen && (
+        <ConfirmationModal
+          title="Confirmar exclusão"
+          message="Tem certeza que deseja deletar este produto?"
+          onConfirm={handleDeleteProduct}
+          onCancel={() => {
+            setIsModalOpen(false);
+            setProductToDelete(null);
+          }}
+        />
       )}
     </div>
   );
