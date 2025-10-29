@@ -174,20 +174,42 @@ interface ButtonProps {
 5. **Deploy**: CI/CD → Monitoring
 
 ### 🌿 Estratégia de Branching
-**OBRIGATÓRIO**: Para toda alteração, refatoração ou correção de erro, criar uma branch da branch atual com nome descritivo ao contexto para manter separação das mudanças.
 
-**Padrão de nomenclatura**:
-- `feature/nome-descritivo` - Novas funcionalidades
+**⚠️ REGRA OBRIGATÓRIA**: Sempre criar uma nova branch antes de qualquer alteração de código.
+
+**Aplicável para**:
+- ✅ Implementação de novas funcionalidades
+- ✅ Refatoração de código existente
+- ✅ Correção de bugs
+- ✅ Atualizações de dependências
+- ✅ Melhorias de performance
+- ✅ Ajustes de estilo/layout
+
+**Padrão de nomenclatura obrigatório**:
+- `feat/nome-descritivo` - Novas funcionalidades
 - `fix/nome-do-bug` - Correções de bugs
-- `refactor/componente-alterado` - Refatorações
+- `refactor/componente-alterado` - Refatorações de código
 - `chore/tarefa-manutencao` - Tarefas de manutenção
 
-**Exemplo**:
+**Fluxo obrigatório**:
 ```bash
-git checkout -b feature/user-authentication
+# 1. Sempre criar branch antes de codificar
+git checkout -b feat/user-authentication
 git checkout -b fix/login-validation-error
-git checkout -b refactor/user-card-component
+git checkout -b refactor/auth-context
+
+# 2. Fazer commits descritivos
+git add .
+git commit -m "feat: implement user authentication flow"
+
+# 3. Push da branch
+git push origin feat/user-authentication
 ```
+
+**❌ NUNCA fazer**:
+- Commits diretos na branch main/master
+- Alterações sem criar branch específica
+- Nomes de branch genéricos (ex: "test", "temp")
 
 ### Checklist de Qualidade
 - [ ] Testes passando (>80% coverage)
