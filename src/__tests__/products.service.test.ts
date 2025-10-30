@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import { productsService } from '../services/products.service';
+import { configManager } from '../config/app.config';
 import type { Product, CreateProductData, UpdateProductData, ProductFilters, ProductsResponse } from '../types/product';
 
 // Mock axios
@@ -10,6 +11,8 @@ const mockedAxios = vi.mocked(axios, true);
 describe('ProductsService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Ensure tests run against real API layer (axios) rather than mocks
+    configManager.setUseMockData(false);
   });
 
   const mockProduct: Product = {

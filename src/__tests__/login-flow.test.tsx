@@ -7,6 +7,7 @@ import OngLayout from '../components/OngLayout'
 import OngDashboard from '../pages/OngDashboard'
 import ProtectedRoute from '../components/ProtectedRoute'
 import { renderWithProviders } from '../test/utils'
+import { configManager } from '../config/app.config'
 
 // Mock axios
 import axios from 'axios'
@@ -23,6 +24,8 @@ afterEach(() => {
 
 describe('Login page flow', () => {
   test('successful login redirects to /ong and shows dashboard', async () => {
+    // Force API mode to use axios mock
+    configManager.setUseMockData(false)
     mockedAxios.post.mockResolvedValueOnce({
       data: {
         token: 'tok-123',
@@ -58,6 +61,8 @@ describe('Login page flow', () => {
   })
 
   test('failed login shows error', async () => {
+    // Use mock mode to exercise mock auth error messaging
+    configManager.setUseMockData(true)
     mockedAxios.post.mockRejectedValueOnce(new Error('invalid'))
 
     renderWithProviders(<Login />, { route: '/login' })
@@ -66,6 +71,6 @@ describe('Login page flow', () => {
     await userEvent.type(screen.getByLabelText(/Password/i), 'wrong')
     await userEvent.click(screen.getByRole('button', { name: /Login/i }))
 
-    await waitFor(() => expect(screen.getByText(/Login failed/i)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText(/Email ou senha inválidos/i)).toBeInTheDocument())
   })
 })

@@ -10,6 +10,6 @@ describe('Sidebar', () => {
       </MemoryRouter>
     );
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Products')).toBeInTheDocument();
+    expect(screen.getByText('Produtos')).toBeInTheDocument();
   });
 });
