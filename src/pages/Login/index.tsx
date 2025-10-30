@@ -30,8 +30,8 @@ const Login: React.FC = () => {
       <Header showAuth={false} />
       <div className="container mt-5">
         <div className="row justify-content-center">
-          <div className="col-md-6">
-            <Card>
+          <div className="col-12 col-sm-10 col-md-8 col-lg-6">
+            <Card className="p-3 shadow-sm">
               <Card.Header>
                 <Card.Title>Login</Card.Title>
               </Card.Header>
