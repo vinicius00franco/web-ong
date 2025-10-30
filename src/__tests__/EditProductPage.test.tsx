@@ -1,17 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { EditProductPage } from '../pages/Products/EditProduct';
 import { productsService } from '../services/products.service';
 import type { Product } from '../types/product';
+import { renderWithProviders } from '../test/utils';
 
-// Mock react-router-dom
+// Mock react-router-dom (partial mock to preserve Link, etc.)
 const mockNavigate = vi.fn();
 const mockParams = { id: '1' };
-vi.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-  useParams: () => mockParams,
-}));
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+    useParams: () => mockParams,
+  };
+});
 
 // Mock the products service
 vi.mock('../services/products.service', () => ({
@@ -43,7 +48,7 @@ describe('EditProductPage', () => {
   it('should load and display product data', async () => {
     (productsService.getProduct as any).mockResolvedValueOnce(mockProduct);
 
-    render(<EditProductPage />);
+  renderWithProviders(<EditProductPage />);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Test Product')).toBeInTheDocument();
@@ -56,7 +61,7 @@ describe('EditProductPage', () => {
   it('should show loading state while fetching product', () => {
     (productsService.getProduct as any).mockImplementationOnce(() => new Promise(() => {})); // Never resolves
 
-    render(<EditProductPage />);
+  renderWithProviders(<EditProductPage />);
 
     expect(screen.getByText('Carregando produto...')).toBeInTheDocument();
   });
@@ -64,7 +69,7 @@ describe('EditProductPage', () => {
   it('should handle product load error', async () => {
     (productsService.getProduct as any).mockRejectedValueOnce(new Error('Product not found'));
 
-    render(<EditProductPage />);
+  renderWithProviders(<EditProductPage />);
 
     await waitFor(() => {
       expect(screen.getByText('Erro ao carregar produto: Product not found')).toBeInTheDocument();
@@ -78,7 +83,7 @@ describe('EditProductPage', () => {
       name: 'Updated Product',
     });
 
-    render(<EditProductPage />);
+  renderWithProviders(<EditProductPage />);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Test Product')).toBeInTheDocument();
@@ -109,7 +114,7 @@ describe('EditProductPage', () => {
     (productsService.getProduct as any).mockResolvedValueOnce(mockProduct);
     (productsService.updateProduct as any).mockRejectedValueOnce(new Error('Update failed'));
 
-    render(<EditProductPage />);
+  renderWithProviders(<EditProductPage />);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Test Product')).toBeInTheDocument();
@@ -126,7 +131,7 @@ describe('EditProductPage', () => {
   it('should navigate back when cancel is clicked', async () => {
     (productsService.getProduct as any).mockResolvedValueOnce(mockProduct);
 
-    render(<EditProductPage />);
+  renderWithProviders(<EditProductPage />);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Test Product')).toBeInTheDocument();

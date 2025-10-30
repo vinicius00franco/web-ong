@@ -81,7 +81,7 @@ export const ProductsList = () => {
       </div>
 
       {loading ? (
-        <div className="row">
+        <div className="row" role="status" aria-live="polite" aria-busy="true">
           {Array.from({ length: 6 }).map((_, index) => (
             <div className="col-12 col-sm-6 col-md-4 mb-4" key={index}>
               <ProductCardSkeleton />

@@ -1,8 +1,9 @@
-// Import custom variables
-@import "variables";
-
-// Import Bootstrap
-@import "bootstrap/scss/bootstrap";
+/* Theme overrides using Bootstrap CSS variables (no Sass @import). */
+:root {
+  /* Match previous SCSS variable overrides */
+  --bs-primary: #28a745;
+  --bs-secondary: #007bff;
+}
 
 .btn {
   transition: transform 0.2s ease-in-out;

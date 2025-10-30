@@ -1,15 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ProductsList } from '../pages/Products/ProductsList';
 import { productsService } from '../services/products.service';
 import type { Product } from '../types/product';
+import { renderWithProviders } from '../test/utils';
 
-// Mock react-router-dom
+// Mock react-router-dom (partial mock to keep Link, etc.)
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-}));
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 // Mock the products service
 vi.mock('../services/products.service', () => ({
@@ -61,7 +66,7 @@ describe('ProductsList', () => {
       totalPages: 0,
     });
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     expect(screen.getByRole('status')).toBeInTheDocument();
     await waitFor(() => {
@@ -78,7 +83,7 @@ describe('ProductsList', () => {
       totalPages: 1,
     });
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Product 1')).toBeInTheDocument();
@@ -100,7 +105,7 @@ describe('ProductsList', () => {
       totalPages: 0,
     });
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     await waitFor(() => {
       expect(screen.getByText('Nenhum produto encontrado.')).toBeInTheDocument();
@@ -110,7 +115,7 @@ describe('ProductsList', () => {
   it('should handle API errors', async () => {
     (productsService.getProducts as any).mockRejectedValueOnce(new Error('API Error'));
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     await waitFor(() => {
       expect(screen.getByText('Erro ao carregar produtos: API Error')).toBeInTheDocument();
@@ -126,7 +131,7 @@ describe('ProductsList', () => {
       totalPages: 1,
     });
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Product 1')).toBeInTheDocument();
@@ -152,7 +157,7 @@ describe('ProductsList', () => {
       totalPages: 0,
     });
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     await waitFor(() => {
       expect(screen.getByText('Nenhum produto encontrado.')).toBeInTheDocument();
@@ -173,7 +178,7 @@ describe('ProductsList', () => {
       totalPages: 1,
     });
 
-    render(<ProductsList />);
+  renderWithProviders(<ProductsList />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Product 1')).toBeInTheDocument();

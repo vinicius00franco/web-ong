@@ -22,6 +22,9 @@ export const ProductCard = ({ product, onEdit, onDelete }: ProductCardProps) => 
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text">{product.description}</p>
         <p className="card-text">
+          <strong>Categoria:</strong> {product.category}
+        </p>
+        <p className="card-text">
           <strong>Preço:</strong> R$ {product.price.toFixed(2).replace('.', ',')}
         </p>
         <div className="mt-auto">
