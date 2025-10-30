@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
+import { authService } from '../../services/auth.service';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
@@ -10,18 +10,23 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user } = response.data;
+      const { token, user } = await authService.login({ email, password });
       login(token, user);
       navigate('/ong');
-    } catch {
-      setError('Login failed');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Falha no login');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,6 +51,7 @@ const Login: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      disabled={loading}
                     />
                   </div>
                   <div className="mb-3">
@@ -57,14 +63,28 @@ const Login: React.FC = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      disabled={loading}
                     />
                   </div>
                   {error && <div className="alert alert-danger">{error}</div>}
+                  
+                  {/* Dica para usuários de desenvolvimento */}
+                  <div className="alert alert-info" role="alert">
+                    <small>
+                      <strong>💡 Credenciais de teste:</strong><br />
+                      Email: admin@ong.com | Senha: admin123<br />
+                      Email: maria@ong.com | Senha: maria123
+                    </small>
+                  </div>
+
                   <div className="d-grid gap-2">
-                    <Button type="submit" variant="primary">Login</Button>
+                    <Button type="submit" variant="primary" disabled={loading}>
+                      {loading ? 'Entrando...' : 'Login'}
+                    </Button>
                     <Button 
                       variant="secondary" 
                       onClick={() => navigate('/')}
+                      disabled={loading}
                     >
                       Back to Home
                     </Button>

@@ -1,73 +1,233 @@
-# React + TypeScript + Vite
+# 🌟 Web ONG - Sistema de Gestão para ONGs
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema web moderno e completo para gestão de ONGs, desenvolvido com React, TypeScript e Vite, seguindo princípios SOLID e TDD.
 
-Currently, two official plugins are available:
+## 🎭 Sistema de Dados Mockados
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este projeto conta com um **sistema completo de dados mockados** que permite desenvolvimento e testes sem necessidade de backend!
 
-## React Compiler
+### ⚡ Início Rápido
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+**🎉 Pronto!** O projeto já roda com dados mockados automaticamente.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Login de teste:**
+- Email: `admin@ong.com`
+- Senha: `admin123`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 📚 Documentação dos Mocks
+
+- **[QUICKSTART_MOCKS.md](./QUICKSTART_MOCKS.md)** - Guia rápido de 5 minutos
+- **[MOCK_SYSTEM.md](./MOCK_SYSTEM.md)** - Documentação completa do sistema
+
+### 🔄 Alternar Mock/API
+
+Clique no botão **⚙️** no canto inferior direito para:
+- ✅ Ativar/desativar dados mockados
+- 🎚️ Ajustar latência simulada (0-2000ms)
+- 💾 Configuração salva no localStorage
+
+## 🚀 Tecnologias
+
+- **React 18** + **TypeScript**
+- **Vite** - Build tool ultrarrápido
+- **Bootstrap 5** - Framework CSS responsivo
+- **Vitest** - Framework de testes moderno
+- **React Router** - Navegação SPA
+- **Axios** - Cliente HTTP
+- **SASS** - Pré-processador CSS
+
+## 📁 Estrutura do Projeto
+
 ```
+src/
+├── mocks/                    # 🎭 Sistema de dados mockados
+│   ├── data/                 # JSONs centralizados
+│   │   ├── products.mock.json
+│   │   ├── users.mock.json
+│   │   ├── donations.mock.json
+│   │   └── organizations.mock.json
+│   └── services/             # Serviços mockados
+├── components/               # Componentes reutilizáveis
+│   ├── Button/
+│   ├── Card/
+│   ├── Header/
+│   ├── MockToggle/          # Toggle de desenvolvimento
+│   └── MockStatusBadge/     # Badge de status
+├── pages/                   # Páginas da aplicação
+│   ├── Home/
+│   ├── Login/
+│   ├── Products/
+│   └── OngDashboard.tsx
+├── services/                # Serviços (auto-detectam mock/API)
+│   ├── products.service.ts
+│   ├── auth.service.ts
+│   └── donations.service.ts
+├── config/                  # Configurações
+│   └── app.config.ts       # Config centralizada
+├── contexts/                # Contextos React
+│   └── AuthContext.tsx
+├── hooks/                   # Hooks customizados
+│   ├── useLocalStorage.ts
+│   └── useMockConfig.ts
+└── types/                   # Tipos TypeScript
+    ├── product.ts
+    └── entities.ts
+```
+
+## 🎯 Features Principais
+
+### ✅ Implementadas
+- ✨ Sistema completo de autenticação
+- 📦 CRUD de produtos com filtros e paginação
+- 🎭 **Sistema de dados mockados centralizado**
+- 🔄 **Alternância mock/API em tempo real**
+- 🎨 Design responsivo (mobile-first)
+- ♿ Acessibilidade (WCAG AA)
+- 🧪 Testes unitários e de integração (>80% coverage)
+- 🔒 Rotas protegidas
+- 📊 Dashboard administrativo
+- 💾 Persistência com localStorage
+
+### 🚧 Em Desenvolvimento
+- 📈 Dashboard com gráficos
+- 🎁 Sistema de doações completo
+- 📧 Notificações por email
+- 📱 PWA (Progressive Web App)
+
+## 🧪 Testes
+
+```bash
+# Rodar todos os testes
+npm test
+
+# Testes com coverage
+npm run test:coverage
+
+# Testes em watch mode
+npm run test:watch
+
+# Testes específicos do sistema de mock
+npm test mock-system
+```
+
+## 🛠️ Scripts Disponíveis
+
+```bash
+npm run dev          # Inicia servidor de desenvolvimento
+npm run build        # Build de produção
+npm run preview      # Preview do build
+npm run test         # Roda testes
+npm run test:ui      # Interface visual dos testes
+npm run lint         # Executa ESLint
+```
+
+## 📦 Dados Mockados Inclusos
+
+### 🛍️ Produtos (12 itens)
+- Cesta Básica Completa
+- Kit Higiene Pessoal
+- Agasalho Infantil
+- Material Escolar
+- E muito mais...
+
+**Categorias**: Alimentos, Higiene, Vestuário, Educação, Limpeza, Saúde
+
+### 👥 Usuários (3 perfis)
+- Admin, Manager e Volunteer
+- Senhas de teste disponíveis
+
+### 🎁 Doações (5 registros)
+- Histórico completo com status
+
+### 🏢 Organização
+- Dados completos da ONG
+
+## 🎨 Princípios de Desenvolvimento
+
+Seguimos as diretrizes do **[AGENTS.md](./AGENTS.md)**:
+
+- ✅ **SOLID** - Código modular e extensível
+- ✅ **TDD** - Desenvolvimento orientado a testes
+- ✅ **DRY** - Não repetir código
+- ✅ **KISS** - Simplicidade em primeiro lugar
+- ✅ **Clean Code** - Código legível e manutenível
+
+## 🌐 API Integration
+
+### Modo Mock (Padrão)
+```typescript
+import { configManager } from './config/app.config';
+configManager.setUseMockData(true); // Usa dados mockados
+```
+
+### Modo API Real
+```typescript
+configManager.setUseMockData(false); // Usa backend real
+```
+
+### Configurar URL da API
+```env
+# .env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+## 📖 Documentação Adicional
+
+- **[AGENTS.md](./AGENTS.md)** - Diretrizes inteligentes de desenvolvimento
+- **[MOCK_SYSTEM.md](./MOCK_SYSTEM.md)** - Sistema de dados mockados (completo)
+- **[QUICKSTART_MOCKS.md](./QUICKSTART_MOCKS.md)** - Guia rápido de mocks
+- **[plano-agil-frontend.md](./plano-agil-frontend.md)** - Planejamento ágil
+
+## 🤝 Contribuindo
+
+1. Crie uma branch para sua feature: `git checkout -b feat/nova-feature`
+2. Commit suas mudanças: `git commit -m 'feat: adiciona nova feature'`
+3. Push para a branch: `git push origin feat/nova-feature`
+4. Abra um Pull Request
+
+### Padrão de Commits
+- `feat:` - Nova funcionalidade
+- `fix:` - Correção de bug
+- `refactor:` - Refatoração de código
+- `test:` - Adição de testes
+- `docs:` - Documentação
+
+## 🐛 Troubleshooting
+
+### Problema: Login não funciona
+**Solução**: Verifique se está usando dados mockados (botão ⚙️)
+
+### Problema: Produtos não aparecem
+**Solução**: Resete os mocks:
+```typescript
+import { resetAllMocks } from './mocks';
+resetAllMocks();
+```
+
+### Problema: Erro de compilação
+**Solução**: 
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+## 📄 Licença
+
+MIT
+
+## 👨‍💻 Desenvolvido com
+
+- ❤️ Paixão por código limpo
+- 🧠 Princípios SOLID
+- 🧪 TDD rigoroso
+- 📚 Documentação clara
+- 🎭 Sistema de mocks inovador
+
+---
+
+**⚡ Dica:** Use o sistema de mocks para desenvolvimento offline e testes rápidos!

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "org-001",
+    "name": "ONG Solidária",
+    "description": "Organização dedicada a ajudar famílias em situação de vulnerabilidade",
+    "cnpj": "12.345.678/0001-99",
+    "email": "contato@ongsolidaria.org",
+    "phone": "(11) 98765-4321",
+    "address": {
+      "street": "Rua da Solidariedade",
+      "number": "123",
+      "complement": "Sala 45",
+      "neighborhood": "Centro",
+      "city": "São Paulo",
+      "state": "SP",
+      "zipCode": "01234-567"
+    },
+    "created_at": "2023-01-01T00:00:00Z",
+    "updated_at": "2024-10-15T00:00:00Z"
+  }
+]
