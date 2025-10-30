@@ -6,6 +6,7 @@ import { useDashboardWidgets } from '../hooks/useDashboardWidgets';
 import DashboardWidget from '../components/DashboardWidget';
 import DashboardStats from '../components/DashboardStats';
 import DashboardSettings from '../components/DashboardSettings';
+import SwipeContainer from '../components/SwipeContainer';
 import { LineChart, BarChart } from '../components/SimpleChart';
 import {
   mockRecentProducts,
@@ -272,23 +273,37 @@ const OngDashboard: React.FC = () => {
             );
           }
           
-          // Outros widgets ocupam metade da largura em telas médias
-          return (
-            <div key={widget.id} className="col-12 col-lg-6">
-              <DashboardWidget
-                id={widget.id}
-                title={widget.name}
-                showControls={editMode}
-                onMoveUp={() => moveWidgetUp(widget.id)}
-                onMoveDown={() => moveWidgetDown(widget.id)}
-                onToggleVisibility={() => toggleWidget(widget.id)}
-              >
-                {renderWidgetContent(widget.id)}
-              </DashboardWidget>
-            </div>
-          );
+          return null; // Renderizado no SwipeContainer abaixo
         })}
       </div>
+
+      {/* Widgets com SwipeContainer em telas < 1000px */}
+      {visibleWidgets.filter(w => w.id !== 'stats').length > 0 && (
+        <SwipeContainer
+          itemsPerView={1}
+          gap={16}
+          showIndicators={true}
+          breakpoint={1000}
+          className="row g-3 mt-3"
+        >
+          {visibleWidgets
+            .filter(w => w.id !== 'stats')
+            .map(widget => (
+              <div key={widget.id} className="col-12 col-lg-6">
+                <DashboardWidget
+                  id={widget.id}
+                  title={widget.name}
+                  showControls={editMode}
+                  onMoveUp={() => moveWidgetUp(widget.id)}
+                  onMoveDown={() => moveWidgetDown(widget.id)}
+                  onToggleVisibility={() => toggleWidget(widget.id)}
+                >
+                  {renderWidgetContent(widget.id)}
+                </DashboardWidget>
+              </div>
+            ))}
+        </SwipeContainer>
+      )}
 
       {/* Empty State */}
       {visibleWidgets.length === 0 && (

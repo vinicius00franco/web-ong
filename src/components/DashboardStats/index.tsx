@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from './StatCard';
+import SwipeContainer from '../SwipeContainer';
 
 /**
  * Ícones SVG reutilizáveis
@@ -74,13 +75,19 @@ const DashboardStats = memo(() => {
   ];
 
   return (
-    <div className="row g-3">
+    <SwipeContainer 
+      itemsPerView={1} 
+      gap={12}
+      showIndicators={true}
+      breakpoint={1000}
+      className="row g-3"
+    >
       {stats.map(stat => (
         <div key={stat.id} className="col-12 col-sm-6 col-lg-3">
           <StatCard {...stat} />
         </div>
       ))}
-    </div>
+    </SwipeContainer>
   );
 });
 

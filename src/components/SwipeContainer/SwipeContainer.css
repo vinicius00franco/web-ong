@@ -1,0 +1,148 @@
+.swipe-container-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.swipe-container {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Esconde scrollbar no Chrome/Safari */
+.swipe-container::-webkit-scrollbar {
+  display: none;
+}
+
+.swipe-item {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Botões de navegação */
+.swipe-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.swipe-nav:hover:not(:disabled) {
+  background: #f8f9fa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.swipe-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.swipe-nav-prev {
+  left: -12px;
+}
+
+.swipe-nav-next {
+  right: -12px;
+}
+
+/* Indicadores de posição */
+.swipe-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px;
+}
+
+.swipe-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dee2e6;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.swipe-indicator:hover {
+  background: #adb5bd;
+  transform: scale(1.2);
+}
+
+.swipe-indicator.active {
+  background: #0d6efd;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Dica de swipe */
+.swipe-hint {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #6c757d;
+  animation: swipeHintBounce 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes swipeHintBounce {
+  0%, 100% {
+    transform: translateX(-50%) translateX(0);
+  }
+  50% {
+    transform: translateX(-50%) translateX(10px);
+  }
+}
+
+/* Responsividade adicional */
+@media (max-width: 576px) {
+  .swipe-nav {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .swipe-nav svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Smooth scroll em dispositivos móveis */
+@media (hover: none) and (pointer: coarse) {
+  .swipe-container {
+    scroll-snap-type: x mandatory;
+  }
+}
+
+/* Adiciona padding lateral para melhor visualização em mobile */
+@media (max-width: 1000px) {
+  .swipe-container-wrapper {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+}
