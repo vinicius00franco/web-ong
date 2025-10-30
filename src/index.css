@@ -24,8 +24,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* Remove flex centering to avoid top/bottom gaps around #root */
   min-width: 320px;
   min-height: 100vh;
 }
