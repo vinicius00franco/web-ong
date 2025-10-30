@@ -14,7 +14,7 @@ const OngLayout: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="d-flex flex-column min-vh-100">
       <Header
         title="ONG Dashboard"
         isAuthenticated={true}
@@ -22,15 +22,13 @@ const OngLayout: React.FC = () => {
         onLogout={handleLogout}
         showAuth={true}
       />
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div className="container-fluid flex-grow-1">
+        <div className="row h-100">
+          <div className="col-md-3 col-lg-2 d-none d-md-block bg-light p-0">
             <Sidebar />
           </div>
-          <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div className="container mt-4">
-              <Outlet />
-            </div>
+          <main className="col-md-9 col-lg-10 px-4 py-3">
+            <Outlet />
           </main>
         </div>
       </div>

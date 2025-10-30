@@ -36,14 +36,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser, removeUser] = useLocalStorage<User | null>('user', null);
 
   const login = (newToken: string, newUser: User) => {
+    console.log('🔐 AuthContext.login chamado:', { 
+      token: newToken?.substring(0, 20) + '...', 
+      user: newUser 
+    });
     setToken(newToken);
     setUser(newUser);
+    
+    // Verificar se foi salvo no localStorage
+    setTimeout(() => {
+      const savedToken = localStorage.getItem('token');
+      const savedUser = localStorage.getItem('user');
+      console.log('✅ Verificação pós-login:', {
+        tokenSalvo: savedToken ? 'SIM' : 'NÃO',
+        userSalvo: savedUser ? 'SIM' : 'NÃO',
+        tokenValue: savedToken?.substring(0, 30) + '...'
+      });
+    }, 100);
   };
 
   const logout = () => {
+    console.log('🚪 AuthContext.logout chamado');
     removeToken();
     removeUser();
   };
+
+  // Log do estado atual
+  React.useEffect(() => {
+    console.log('🔄 Estado AuthContext atualizado:', {
+      isAuthenticated: !!token,
+      hasUser: !!user,
+      token: token?.substring(0, 20) + '...'
+    });
+  }, [token, user]);
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout }}>

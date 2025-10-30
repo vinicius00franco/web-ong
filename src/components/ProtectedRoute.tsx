@@ -9,10 +9,18 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { token } = useAuth();
 
+  console.log('🛡️ ProtectedRoute verificando autenticação:', {
+    hasToken: !!token,
+    tokenPreview: token?.substring(0, 30) + '...',
+    willRedirect: !token
+  });
+
   if (!token) {
+    console.warn('⚠️ ProtectedRoute: Token não encontrado, redirecionando para /login');
     return <Navigate to="/login" replace />;
   }
 
+  console.log('✅ ProtectedRoute: Acesso autorizado');
   return <>{children}</>;
 };
 
