@@ -6,6 +6,14 @@ import { useDashboardWidgets } from '../hooks/useDashboardWidgets';
 import DashboardWidget from '../components/DashboardWidget';
 import DashboardStats from '../components/DashboardStats';
 import DashboardSettings from '../components/DashboardSettings';
+import { LineChart, BarChart } from '../components/SimpleChart';
+import {
+  mockRecentProducts,
+  mockDonationsData,
+  mockRecentActivities,
+  mockVolunteersData,
+  mockProjectsStatus,
+} from '../mocks/data/dashboard.mock';
 
 const OngDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -36,32 +44,102 @@ const OngDashboard: React.FC = () => {
         
       case 'recent-products':
         return (
-          <div className="text-center text-muted py-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="mb-3 opacity-25" viewBox="0 0 16 16">
-              <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-            </svg>
-            <p className="small mb-2">Nenhum produto recente</p>
-            <Link to="/ong/products/new" className="btn btn-sm btn-primary">Adicionar Produto</Link>
+          <div className="list-group list-group-flush">
+            {mockRecentProducts.map(product => {
+              const statusConfig = {
+                available: { color: 'success', label: 'Disponível' },
+                'low-stock': { color: 'warning', label: 'Estoque Baixo' },
+                reserved: { color: 'info', label: 'Reservado' },
+              }[product.status] || { color: 'secondary', label: 'Desconhecido' };
+
+              return (
+                <div key={product.id} className="list-group-item border-0 px-0">
+                  <div className="d-flex align-items-center">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="rounded me-3"
+                      style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                    />
+                    <div className="flex-grow-1">
+                      <h6 className="mb-0">{product.name}</h6>
+                      <small className="text-muted">{product.category}</small>
+                    </div>
+                    <div className="text-end">
+                      <span className={`badge bg-${statusConfig.color} mb-1`}>
+                        {statusConfig.label}
+                      </span>
+                      <div className="small text-muted">Qtd: {product.quantity}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="text-center pt-3">
+              <Link to="/ong/products" className="btn btn-sm btn-outline-primary">
+                Ver Todos os Produtos
+              </Link>
+            </div>
           </div>
         );
         
       case 'donations-chart':
         return (
-          <div className="text-center text-muted py-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="mb-3 opacity-25" viewBox="0 0 16 16">
-              <path d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5z"/>
-            </svg>
-            <p className="small mb-0">Gráfico de doações em desenvolvimento</p>
+          <div>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h6 className="text-muted mb-0">Total Arrecadado</h6>
+                <h3 className="mb-0">
+                  R$ {mockDonationsData.reduce((sum, d) => sum + d.value, 0).toLocaleString('pt-BR')}
+                </h3>
+              </div>
+              <span className="badge bg-success">
+                +{Math.round((mockDonationsData[mockDonationsData.length - 1].value / mockDonationsData[mockDonationsData.length - 2].value - 1) * 100)}% vs mês anterior
+              </span>
+            </div>
+            <LineChart 
+              data={mockDonationsData}
+              height={220}
+              color="#198754"
+              fillColor="rgba(25, 135, 84, 0.1)"
+            />
           </div>
         );
         
       case 'activities':
         return (
-          <div className="text-center text-muted py-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="mb-3 opacity-25" viewBox="0 0 16 16">
-              <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-            </svg>
-            <p className="small mb-0">Nenhuma atividade recente</p>
+          <div className="list-group list-group-flush" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            {mockRecentActivities.map(activity => {
+              const timeAgo = (timestamp: string) => {
+                const now = new Date();
+                const activityDate = new Date(timestamp);
+                const diffMs = now.getTime() - activityDate.getTime();
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                if (diffMins < 60) return `${diffMins}min atrás`;
+                if (diffHours < 24) return `${diffHours}h atrás`;
+                return `${diffDays}d atrás`;
+              };
+
+              return (
+                <div key={activity.id} className="list-group-item border-0 px-0 py-2">
+                  <div className="d-flex align-items-start">
+                    <div className="me-3" style={{ fontSize: '1.5rem' }}>
+                      {activity.icon}
+                    </div>
+                    <div className="flex-grow-1">
+                      <p className="mb-0 small">
+                        <strong>{activity.user}</strong> {activity.action}
+                        {activity.target && <> <span className="text-primary">{activity.target}</span></>}
+                      </p>
+                      <small className="text-muted">{timeAgo(activity.timestamp)}</small>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         );
         
@@ -98,22 +176,45 @@ const OngDashboard: React.FC = () => {
         
       case 'volunteers-chart':
         return (
-          <div className="text-center text-muted py-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="mb-3 opacity-25" viewBox="0 0 16 16">
-              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
-            </svg>
-            <p className="small mb-0">Dados de voluntários em desenvolvimento</p>
+          <div>
+            <div className="mb-3">
+              <h6 className="text-muted mb-0">Voluntários Ativos esta Semana</h6>
+              <h3 className="mb-0">{mockVolunteersData.reduce((sum, d) => sum + d.value, 0)}</h3>
+            </div>
+            <BarChart 
+              data={mockVolunteersData}
+              height={200}
+            />
           </div>
         );
         
       case 'projects-status':
         return (
-          <div className="text-center text-muted py-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" className="mb-3 opacity-25" viewBox="0 0 16 16">
-              <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-              <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.235.235 0 0 1 .02-.022z"/>
-            </svg>
-            <p className="small mb-0">Status de projetos em desenvolvimento</p>
+          <div className="list-group list-group-flush">
+            {mockProjectsStatus.map(project => (
+              <div key={project.id} className="list-group-item border-0 px-0">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <h6 className="mb-0">{project.name}</h6>
+                  <span className={`badge ${project.status === 'active' ? 'bg-success' : 'bg-warning'}`}>
+                    {project.status === 'active' ? 'Ativo' : 'Planejamento'}
+                  </span>
+                </div>
+                <div className="progress mb-2" style={{ height: '8px' }}>
+                  <div 
+                    className="progress-bar" 
+                    role="progressbar" 
+                    style={{ width: `${project.progress}%` }}
+                    aria-valuenow={project.progress} 
+                    aria-valuemin={0} 
+                    aria-valuemax={100}
+                  ></div>
+                </div>
+                <div className="d-flex justify-content-between small text-muted">
+                  <span>{project.current} / {project.goal} itens</span>
+                  <span>{project.progress}%</span>
+                </div>
+              </div>
+            ))}
           </div>
         );
         
