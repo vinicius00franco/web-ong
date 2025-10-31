@@ -1,4 +1,5 @@
 import axios from 'axios';
+import './axios-logger';
 import type { Product, CreateProductData, UpdateProductData, ProductFilters, ProductsResponse } from '../types/product';
 import { configManager } from '../config/app.config';
 import { mockProductsService } from '../mocks';

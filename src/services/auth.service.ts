@@ -1,4 +1,5 @@
 import axios from 'axios';
+import './axios-logger';
 import type { LoginCredentials, LoginResponse, User } from '../types/entities';
 import { configManager } from '../config/app.config';
 import { mockAuthService } from '../mocks';

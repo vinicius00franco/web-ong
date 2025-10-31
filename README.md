@@ -231,3 +231,17 @@ MIT
 ---
 
 **⚡ Dica:** Use o sistema de mocks para desenvolvimento offline e testes rápidos!
+
+## 🧭 Logs e Observabilidade (Fase 5 - MVP)
+
+Este projeto emite logs estruturados (JSON) no console para facilitar monitoramento e depuração.
+
+- Logs de requisição (RN-LOG-01): emitidos para todas as chamadas HTTP via Axios.
+    - Campos: `timestamp`, `route`, `method`, `status`, `latency` (ms), `identifiers` (`userId`, `organization_id` quando disponíveis via `localStorage.user`).
+    - Implementação: `src/services/axios-logger.ts` (interceptores Axios) e importado automaticamente pelos serviços.
+
+- Log específico da Busca Inteligente (RN-LOG-02): emitido após cada busca pública.
+    - Campos: `inputText`, `filters` (interpretação da AI quando existir), `aiSuccess` (boolean), `fallbackApplied` (boolean) e `timestamp`.
+    - Implementação: `src/services/public-search.service.ts`.
+
+Observação: No MVP, os logs são enviados para `console.log` como objetos serializáveis. Integrações com coletores externos (ELK/Datadog/etc.) podem ser adicionadas futuramente.

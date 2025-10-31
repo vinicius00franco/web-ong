@@ -1,4 +1,5 @@
 import axios from 'axios';
+import './axios-logger';
 import type { Donation } from '../types/entities';
 import { configManager } from '../config/app.config';
 import { mockDonationsService } from '../mocks';
