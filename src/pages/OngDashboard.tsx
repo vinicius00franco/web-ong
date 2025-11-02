@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { useAuth } from '../contexts/AuthContext';
 import { useDashboardWidgets } from '../hooks/useDashboardWidgets';
+import {
+  useRecentProducts,
+  useDonationsChart,
+  useRecentActivities,
+  useVolunteersChart,
+  useProjectsStatus,
+} from '../hooks/useDashboardData';
 import DashboardWidget from '../components/DashboardWidget';
 import DashboardStats from '../components/DashboardStats';
 import DashboardSettings from '../components/DashboardSettings';
 import SwipeContainer from '../components/SwipeContainer';
 import { LineChart, BarChart } from '../components/SimpleChart';
-import {
-  mockRecentProducts,
-  mockDonationsData,
-  mockRecentActivities,
-  mockVolunteersData,
-  mockProjectsStatus,
-} from '../mocks/data/dashboard.mock';
 
 const OngDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -26,7 +26,14 @@ const OngDashboard: React.FC = () => {
     moveWidgetDown,
     resetWidgets,
   } = useDashboardWidgets();
-  
+
+  // Hooks para dados do dashboard
+  const { products: recentProducts } = useRecentProducts();
+  const { data: donationsChartData } = useDonationsChart();
+  const { activities: recentActivities } = useRecentActivities();
+  const { data: volunteersChartData } = useVolunteersChart();
+  const { projects: projectsStatus } = useProjectsStatus();
+
   const [showSettings, setShowSettings] = useState(false);
   const [editMode, setEditMode] = useState(false);
   
@@ -46,7 +53,7 @@ const OngDashboard: React.FC = () => {
       case 'recent-products':
         return (
           <div className="list-group list-group-flush">
-            {mockRecentProducts.map(product => {
+            {recentProducts.map(product => {
               const statusConfig = {
                 available: { color: 'success', label: 'Disponível' },
                 'low-stock': { color: 'warning', label: 'Estoque Baixo' },
@@ -91,15 +98,15 @@ const OngDashboard: React.FC = () => {
               <div>
                 <h6 className="text-muted mb-0">Total Arrecadado</h6>
                 <h3 className="mb-0">
-                  R$ {mockDonationsData.reduce((sum, d) => sum + d.value, 0).toLocaleString('pt-BR')}
+                  R$ {donationsChartData.reduce((sum, d) => sum + d.value, 0).toLocaleString('pt-BR')}
                 </h3>
               </div>
               <span className="badge bg-success">
-                +{Math.round((mockDonationsData[mockDonationsData.length - 1].value / mockDonationsData[mockDonationsData.length - 2].value - 1) * 100)}% vs mês anterior
+                +{Math.round((donationsChartData[donationsChartData.length - 1].value / donationsChartData[donationsChartData.length - 2].value - 1) * 100)}% vs mês anterior
               </span>
             </div>
             <LineChart 
-              data={mockDonationsData}
+              data={donationsChartData}
               height={220}
               color="#198754"
               fillColor="rgba(25, 135, 84, 0.1)"
@@ -110,7 +117,7 @@ const OngDashboard: React.FC = () => {
       case 'activities':
         return (
           <div className="list-group list-group-flush" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {mockRecentActivities.map(activity => {
+            {recentActivities.map(activity => {
               const timeAgo = (timestamp: string) => {
                 const now = new Date();
                 const activityDate = new Date(timestamp);
@@ -180,10 +187,10 @@ const OngDashboard: React.FC = () => {
           <div>
             <div className="mb-3">
               <h6 className="text-muted mb-0">Voluntários Ativos esta Semana</h6>
-              <h3 className="mb-0">{mockVolunteersData.reduce((sum, d) => sum + d.value, 0)}</h3>
+              <h3 className="mb-0">{volunteersChartData.reduce((sum, d) => sum + d.value, 0)}</h3>
             </div>
             <BarChart 
-              data={mockVolunteersData}
+              data={volunteersChartData}
               height={200}
             />
           </div>
@@ -192,7 +199,7 @@ const OngDashboard: React.FC = () => {
       case 'projects-status':
         return (
           <div className="list-group list-group-flush">
-            {mockProjectsStatus.map(project => (
+            {projectsStatus.map(project => (
               <div key={project.id} className="list-group-item border-0 px-0">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <h6 className="mb-0">{project.name}</h6>

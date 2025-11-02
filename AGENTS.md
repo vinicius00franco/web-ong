@@ -1,8 +1,8 @@
 # 🤖 AGENTS.md - Diretrizes Inteligentes de Desenvolvimento
 
-## 🏗️ Arquitetura Modular
+## 📁 1. Arquitetura e Estrutura
 
-### Estrutura Baseada em Domínio
+### 1.1 Estrutura Baseada em Domínio
 ```
 src/
 ├── components/          # Componentes reutilizáveis
@@ -16,92 +16,87 @@ src/
 └── utils/              # Funções utilitárias
 ```
 
-## ⚡ Princípios SOLID Aplicados
+## 🎯 2. Princípios SOLID Aplicados
 
-### SRP - Uma Responsabilidade
+### 2.1 SRP - Responsabilidade Única
 - Componente = Uma função específica
 - Hook customizado = Uma lógica isolada
 - Store = Um domínio de dados
 
-### OCP - Extensível, Não Modificável
+### 2.2 OCP - Aberto para Extensão, Fechado para Modificação
 - Props para customização
 - Composição sobre herança
 - Interfaces bem definidas
 
-### LSP - Substituição Segura
+### 2.3 LSP - Substituição de Liskov
 - Contratos consistentes
 - Comportamento previsível
 
-### ISP - Interfaces Específicas
+### 2.4 ISP - Segregação de Interfaces
 - Props mínimas necessárias
 - Evitar "god components"
 
-### DIP - Abstrações, Não Implementações
+### 2.5 DIP - Inversão de Dependências
+- Abstrações, não implementações
 - Injeção de dependências
 - Interfaces para contratos
 
-## 🧪 TDD - Desenvolvimento Orientado a Testes
+## � 3. Componentes e Composição
 
-### Ciclo Inteligente: Red → Green → Refactor
-1. **Red**: Teste falha (define comportamento esperado)
-2. **Green**: Código mínimo funcional
-3. **Refactor**: Otimização sem quebrar testes
-
-### Pirâmide de Testes
-- **70% Unit**: Componentes isolados, hooks, utils
-- **20% Integration**: Fluxos entre componentes
-- **10% E2E**: Jornadas críticas do usuário
-
-### Padrão de Teste
-```tsx
-// Arrange → Act → Assert
-describe('Component', () => {
-  it('should render correctly', () => {
-    const props = { title: 'Test' };
-    render(<Component {...props} />);
-    expect(screen.getByText('Test')).toBeInTheDocument();
-  });
-});
-```
-
-## 🧩 Composição Inteligente
-
-### Padrões de Reutilização
+### 3.1 Padrões de Reutilização
 - **Compound Components**: API declarativa
 - **Custom Hooks**: Lógica compartilhada
 - **Render Props**: Flexibilidade máxima
 - **Children as Function**: Controle total
 
-### Exemplo Prático
+### 3.2 Diretriz Obrigatória de Composição
+
+#### ⚠️ REGRA: Composição de Componentes Reutilizáveis
+**Sempre implementar código através de composição de vários componentes reutilizáveis.**
+
+#### Princípios Fundamentais
+- **Composição sobre Herança**: Combinar componentes pequenos vs. hierarquias complexas
+- **Componentes Atômicos**: Criar básicos (botões, inputs, cards) para combinação
+- **Flexibilidade Máxima**: Customização via props e children
+- **Reutilização Sistemática**: Design para múltiplos contextos
+
+#### Padrão de Implementação
 ```tsx
-// Flexível e reutilizável
-<DataTable data={users}>
-  {({ item, index }) => (
-    <UserRow key={item.id} user={item} />
-  )}
-</DataTable>
+// ❌ Evitar: Componente monolítico
+const UserProfile = ({ user }) => (
+  <div className="profile">
+    <img src={user.avatar} alt={user.name} />
+    <h2>{user.name}</h2>
+    <p>{user.email}</p>
+    <button>Editar</button>
+  </div>
+);
+
+// ✅ Recomendado: Composição reutilizável
+const UserProfile = ({ user, onEdit }) => (
+  <Card>
+    <Avatar src={user.avatar} alt={user.name} />
+    <UserInfo name={user.name} email={user.email} />
+    <Button onClick={onEdit}>Editar</Button>
+  </Card>
+);
 ```
 
-## 🎨 Estilização Estratégica
+#### Benefícios da Composição
+- **Manutenibilidade**: Alterações isoladas em componentes específicos
+- **Testabilidade**: Testes unitários simples e focados
+- **Reutilização**: Uso em diferentes contextos
+- **Performance**: Otimizações independentes
+- **Consistência**: Padrões visuais uniformes
 
-### Bootstrap + CSS Modules
-- Bootstrap: Layout, grid, componentes base
-- CSS Modules: Customizações específicas
-- Variáveis CSS: Temas e consistência
+## 🗄️ 4. Gerenciamento de Estado
 
-### Mobile-First + Performance
-- Breakpoints: `sm(576px) → md(768px) → lg(992px) → xl(1200px)`
-- CSS crítico inline
-- Lazy loading de estilos não essenciais
-
-## 🗄️ Estado Inteligente com Zustand
-
-### Hierarquia de Estado
+### 4.1 Hierarquia de Estado
 1. **Local**: `useState` para UI temporária
 2. **Compartilhado**: Zustand para dados globais
 3. **Servidor**: React Query para cache de API
 
-### Store Otimizada
+### 4.2 Store Otimizada com Zustand
 ```typescript
 interface AuthStore {
   user: User | null;
@@ -115,7 +110,7 @@ const useAuthStore = create<AuthStore>()(persist(
     user: null,
     isAuthenticated: false,
     login: async (credentials) => {
-      const user = await authService.login(credentials);
+      const user: User = await authService.login(credentials);
       set({ user, isAuthenticated: true });
     },
     logout: () => set({ user: null, isAuthenticated: false })
@@ -127,24 +122,62 @@ const useAuthStore = create<AuthStore>()(persist(
 const useUser = () => useAuthStore(state => state.user);
 ```
 
-### Performance com Seletores
+### 4.3 Performance com Seletores
 ```typescript
 // ❌ Re-render desnecessário
 const { user, posts, comments } = useStore();
 
-// ✅ Re-render apenas quando user muda
+// ✅ Re-render apenas quando necessário
 const user = useStore(state => state.user);
 ```
 
-## 🚀 Performance & Qualidade
+## 🎨 5. Estilização Estratégica
 
-### Otimizações Críticas
+### 5.1 Bootstrap + CSS Modules
+- **Bootstrap**: Layout, grid, componentes base
+- **CSS Modules**: Customizações específicas
+- **Variáveis CSS**: Temas e consistência
+
+### 5.2 Mobile-First + Performance
+- **Breakpoints**: `sm(576px) → md(768px) → lg(992px) → xl(1200px)`
+- **CSS crítico**: Inline para performance
+- **Lazy loading**: Estilos não essenciais
+
+## 🧪 6. Testes e Qualidade
+
+### 6.1 TDD - Desenvolvimento Orientado a Testes
+
+#### Ciclo Red → Green → Refactor
+1. **Red**: Teste falha (define comportamento esperado)
+2. **Green**: Código mínimo funcional
+3. **Refactor**: Otimização sem quebrar testes
+
+#### Pirâmide de Testes
+- **70% Unit**: Componentes isolados, hooks, utils
+- **20% Integration**: Fluxos entre componentes
+- **10% E2E**: Jornadas críticas do usuário
+
+### 6.2 Padrão de Teste
+```tsx
+// Arrange → Act → Assert
+describe('Component', () => {
+  it('should render correctly', () => {
+    const props = { title: 'Test' };
+    render(<Component {...props} />);
+    expect(screen.getByText('Test')).toBeInTheDocument();
+  });
+});
+```
+
+## 🚀 7. Performance e Otimizações
+
+### 7.1 Otimizações Críticas
 - **Code Splitting**: `React.lazy()` + `Suspense`
 - **Memoização**: `React.memo` para componentes puros
 - **Seletores**: Zustand com seletores específicos
 - **Bundle Analysis**: `npm run build -- --analyze`
 
-### TypeScript Inteligente
+### 7.2 TypeScript Inteligente
 ```typescript
 // Tipos utilitários
 type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -158,47 +191,44 @@ interface ButtonProps {
 }
 ```
 
-### Acessibilidade por Design
-- Elementos semânticos sempre
-- ARIA labels automáticos
-- Focus management
-- Contraste WCAG AA (4.5:1)
+### 7.3 Acessibilidade por Design
+- **Elementos semânticos**: Sempre usar tags apropriadas
+- **ARIA labels**: Automáticos quando necessário
+- **Focus management**: Navegação por teclado
+- **Contraste**: WCAG AA (4.5:1) mínimo
 
-## 🔄 Fluxo de Desenvolvimento
+## 🔄 8. Fluxo de Desenvolvimento
 
-### Metodologia Ágil
+### 8.1 Metodologia Ágil
 1. **Análise**: User Story → Acceptance Criteria
 2. **Design**: Wireframe → Component Tree
 3. **TDD**: Test → Code → Refactor
 4. **Review**: Code Review → QA
 5. **Deploy**: CI/CD → Monitoring
 
-### 🌿 Estratégia de Branching
+### 8.2 Estratégia de Branching
 
-**⚠️ REGRA OBRIGATÓRIA**: Sempre criar uma nova branch antes de qualquer alteração de código.
+#### ⚠️ REGRA OBRIGATÓRIA: Branch por Alteração
+**Sempre criar nova branch antes de qualquer alteração de código.**
 
-**Aplicável para**:
-- ✅ Implementação de novas funcionalidades
-- ✅ Refatoração de código existente
-- ✅ Correção de bugs
-- ✅ Atualizações de dependências
-- ✅ Melhorias de performance
-- ✅ Ajustes de estilo/layout
+#### Casos Aplicáveis
+- ✅ Novas funcionalidades (`feat/`)
+- ✅ Correções de bugs (`fix/`)
+- ✅ Refatorações (`refactor/`)
+- ✅ Manutenção (`chore/`)
 
-**Padrão de nomenclatura obrigatório**:
+#### Padrão de Nomenclatura
 - `feat/nome-descritivo` - Novas funcionalidades
 - `fix/nome-do-bug` - Correções de bugs
-- `refactor/componente-alterado` - Refatorações de código
-- `chore/tarefa-manutencao` - Tarefas de manutenção
+- `refactor/componente-alterado` - Refatorações
+- `chore/tarefa-manutencao` - Manutenção
 
-**Fluxo obrigatório**:
+#### Fluxo Obrigatório
 ```bash
-# 1. Sempre criar branch antes de codificar
+# 1. Criar branch específica
 git checkout -b feat/user-authentication
-git checkout -b fix/login-validation-error
-git checkout -b refactor/auth-context
 
-# 2. Fazer commits descritivos
+# 2. Commits descritivos
 git add .
 git commit -m "feat: implement user authentication flow"
 
@@ -206,12 +236,11 @@ git commit -m "feat: implement user authentication flow"
 git push origin feat/user-authentication
 ```
 
-**❌ NUNCA fazer**:
-- Commits diretos na branch main/master
-- Alterações sem criar branch específica
-- Nomes de branch genéricos (ex: "test", "temp")
+#### ❌ PROIBIDO
+- Commits diretos na main/master
+- Branches genéricas (ex: "test", "temp")
 
-### Checklist de Qualidade
+### 8.3 Checklist de Qualidade
 - [ ] Testes passando (>80% coverage)
 - [ ] TypeScript sem erros
 - [ ] ESLint + Prettier aplicados
@@ -219,9 +248,9 @@ git push origin feat/user-authentication
 - [ ] Acessibilidade validada
 - [ ] Responsividade testada
 
-## 📋 Templates de Código
+## 📋 9. Templates e Padrões de Código
 
-### Componente Otimizado
+### 9.1 Componente Otimizado
 ```tsx
 interface Props {
   title: string;
@@ -231,7 +260,7 @@ interface Props {
 
 const Component = memo<Props>(({ title, variant = 'primary', onClick }) => {
   return (
-    <button 
+    <button
       className={`btn btn-${variant}`}
       onClick={onClick}
       type="button"
@@ -245,7 +274,7 @@ Component.displayName = 'Component';
 export default Component;
 ```
 
-### Hook com Performance
+### 9.2 Hook com Performance
 ```tsx
 const useOptimizedHook = <T>(initialData: T[]) => {
   const [data, setData] = useState(initialData);
@@ -268,39 +297,39 @@ const useOptimizedHook = <T>(initialData: T[]) => {
 };
 ```
 
-## 📊 Monitoramento & Evolução
+## 📊 10. Monitoramento e Evolução
 
-### Métricas Essenciais
+### 10.1 Métricas Essenciais
 - **Performance**: Core Web Vitals (LCP, FID, CLS)
 - **Erros**: Error Boundary + Logging
 - **Usuário**: Analytics + Heatmaps
 - **Bundle**: Size tracking + Tree shaking
 
-### Versionamento Semântico
+### 10.2 Versionamento Semântico
 - **MAJOR**: Breaking changes
 - **MINOR**: New features
 - **PATCH**: Bug fixes
 
-### Documentação Viva
-- Storybook para componentes
-- JSDoc para funções complexas
-- README com exemplos práticos
-- Changelog automatizado
+### 10.3 Documentação Viva
+- **Storybook**: Para componentes
+- **JSDoc**: Funções complexas
+- **README**: Exemplos práticos
+- **Changelog**: Automatizado
 
 ---
 
-## 🎯 Resumo Executivo
+## 🎯 11. Resumo Executivo
 
-### Pilares Fundamentais
+### 11.1 Pilares Fundamentais
 1. **Arquitetura**: Modular e escalável
 2. **Qualidade**: TDD + TypeScript + ESLint
 3. **Performance**: Lazy loading + Memoização + Seletores
 4. **UX**: Acessibilidade + Responsividade + Loading states
 5. **DX**: Hot reload + Type safety + Error boundaries
 
-### Ferramentas Core
+### 11.2 Stack Tecnológica Core
 - **Estado**: Zustand + React Query
 - **Estilo**: Bootstrap + CSS Modules
-- **Teste**: Vitest + Testing Library
+- **Testes**: Vitest + Testing Library
 - **Build**: Vite + TypeScript
 - **Lint**: ESLint + Prettier

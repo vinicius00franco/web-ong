@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDashboardStats } from '../../hooks/useDashboardStats';
 import StatCard from './StatCard';
 import SwipeContainer from '../SwipeContainer';
 
@@ -36,13 +37,23 @@ const Icons = {
  */
 const DashboardStats = memo(() => {
   const navigate = useNavigate();
+  const { stats: dashboardStats } = useDashboardStats();
 
-  // Dados mockados - em produção viriam de uma API
-  const stats = [
+  // Dados mockados como fallback se não conseguir carregar
+  const fallbackStats = {
+    products: 24,
+    donations: 12450,
+    volunteers: 48,
+    projects: 7,
+  };
+
+  const currentStats = dashboardStats || fallbackStats;
+
+  const statCards = [
     {
       id: 'products',
       title: 'Produtos',
-      value: 24,
+      value: currentStats.products,
       icon: Icons.Products,
       color: 'primary' as const,
       trend: { value: 12, isPositive: true, label: 'vs. mês anterior' },
@@ -51,7 +62,7 @@ const DashboardStats = memo(() => {
     {
       id: 'donations',
       title: 'Doações',
-      value: 'R$ 12.450',
+      value: `R$ ${currentStats.donations.toLocaleString('pt-BR')}`,
       icon: Icons.Donations,
       color: 'success' as const,
       trend: { value: 8.5, isPositive: true, label: 'este mês' },
@@ -59,7 +70,7 @@ const DashboardStats = memo(() => {
     {
       id: 'volunteers',
       title: 'Voluntários',
-      value: 48,
+      value: currentStats.volunteers,
       icon: Icons.Volunteers,
       color: 'warning' as const,
       trend: { value: 3, isPositive: false, label: 'vs. semana anterior' },
@@ -67,7 +78,7 @@ const DashboardStats = memo(() => {
     {
       id: 'projects',
       title: 'Projetos Ativos',
-      value: 7,
+      value: currentStats.projects,
       icon: Icons.Projects,
       color: 'info' as const,
       trend: { value: 2, isPositive: true, label: 'novos este mês' },
@@ -82,7 +93,7 @@ const DashboardStats = memo(() => {
       breakpoint={1000}
       className="row g-3"
     >
-      {stats.map(stat => (
+      {statCards.map(stat => (
         <div key={stat.id} className="col-12 col-sm-6 col-lg-3">
           <StatCard {...stat} />
         </div>

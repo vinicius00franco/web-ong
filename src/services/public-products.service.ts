@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Product, ProductsResponse } from '../types/product'
+import type { ProductsResponse } from '../types/product'
 import { configManager } from '../config/app.config'
 import { mockPublicProductsService } from '../mocks'
 
