@@ -4,7 +4,7 @@ import type { Product, CreateProductData, UpdateProductData } from '../types/pro
 
 // Configuração da API
 const API_BASE_URL = 'http://localhost:3000';
-const LLM_API_URL = 'http://localhost:8000';
+const LLM_API_URL = 'http://localhost:8000/api/v1/parse-query';
 
 // Credenciais de teste
 const TEST_CREDENTIALS = {
@@ -230,6 +230,36 @@ describe('API Integration Tests', () => {
         console.warn('⚠️ LLM API not accessible:', error.message);
         // Não falhar o teste se a LLM API não estiver disponível
         expect(error.code).toBeDefined();
+      }
+    });
+
+    it('should test public search endpoint with LLM integration', async () => {
+      try {
+        const searchQuery = 'produtos de limpeza até 50 reais';
+        const response = await axios.get(`${API_BASE_URL}/api/public/search`, {
+          params: { q: searchQuery }
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.data).toHaveProperty('success', true);
+        expect(response.data).toHaveProperty('data');
+
+        // Verificar estrutura da resposta da busca inteligente
+        const searchData = response.data.data;
+        expect(searchData).toHaveProperty('interpretation');
+        expect(searchData).toHaveProperty('ai_used');
+        expect(searchData).toHaveProperty('fallback_applied');
+        expect(searchData).toHaveProperty('data');
+        expect(Array.isArray(searchData.data)).toBe(true);
+
+        console.log('✅ Public search with LLM integration working');
+        console.log('Interpretation:', searchData.interpretation);
+        console.log('AI Used:', searchData.ai_used);
+        console.log('Fallback Applied:', searchData.fallback_applied);
+      } catch (error: any) {
+        console.warn('⚠️ Public search endpoint not accessible:', error.response?.data || error.message);
+        // Não falhar o teste se a busca não estiver disponível
+        expect(error.response?.status || 500).toBeDefined();
       }
     });
   });

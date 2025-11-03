@@ -7,6 +7,8 @@ export interface AppConfig {
   useMockData: boolean;
   mockDelay: number; // Simula latência de rede (ms)
   apiBaseUrl: string;
+  llmApiUrl: string;
+  llmTimeout: number;
   enableLogs: boolean;
   nodeEnv: string;
 }
@@ -15,6 +17,8 @@ export interface AppConfig {
 const envUseMockData = import.meta.env.VITE_USE_MOCK_DATA;
 const envMockDelay = import.meta.env.VITE_MOCK_DELAY;
 const envApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const envLlmApiUrl = import.meta.env.VITE_LLM_API_URL;
+const envLlmTimeout = import.meta.env.VITE_LLM_TIMEOUT;
 const envEnableLogs = import.meta.env.VITE_ENABLE_LOGS;
 const envNodeEnv = import.meta.env.VITE_NODE_ENV;
 
@@ -23,6 +27,8 @@ const defaultConfig: AppConfig = {
   useMockData: envUseMockData === 'true' || envUseMockData === true || true, // Fallback para true
   mockDelay: envMockDelay ? parseInt(envMockDelay as string, 10) : 500,
   apiBaseUrl: envApiBaseUrl as string || 'http://localhost:3000',
+  llmApiUrl: envLlmApiUrl as string || 'http://localhost:8000/api/v1/parse-query',
+  llmTimeout: envLlmTimeout ? parseInt(envLlmTimeout as string, 10) : 3000,
   enableLogs: envEnableLogs === 'true' || envEnableLogs === true || false,
   nodeEnv: envNodeEnv as string || 'development',
 };
@@ -49,6 +55,16 @@ class ConfigManager {
   setApiBaseUrl(url: string): void {
     this.config.apiBaseUrl = url;
     this.log('API Base URL configurado para:', url);
+  }
+
+  setLlmApiUrl(url: string): void {
+    this.config.llmApiUrl = url;
+    this.log('LLM API URL configurado para:', url);
+  }
+
+  setLlmTimeout(timeout: number): void {
+    this.config.llmTimeout = timeout;
+    this.log('LLM Timeout configurado para:', timeout);
   }
 
   // Restaura configuração do localStorage (sobrescreve .env se existir)
