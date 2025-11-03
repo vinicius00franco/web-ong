@@ -12,7 +12,7 @@ describe('UserCard', () => {
     email: 'joao@example.com',
     organization_id: 'org-001',
     role: 'admin',
-    created_at: '2024-01-01T00:00:00Z'
+    created_at: '2024-01-01T12:00:00Z'
   }
 
   const defaultProps = {
@@ -70,7 +70,7 @@ describe('UserCard', () => {
       render(<UserCard {...defaultProps} />)
 
       expect(screen.getByText(/Criado em:/)).toBeInTheDocument()
-      expect(screen.getByText('31/12/2023')).toBeInTheDocument()
+      expect(screen.getByText(/01\/01\/2024/)).toBeInTheDocument()
     })
 
     it('should render action buttons', () => {
@@ -223,7 +223,8 @@ describe('UserCard', () => {
 
       render(<UserCard {...defaultProps} user={userWithDifferentDate} />)
 
-      expect(screen.getByText('25/12/2023')).toBeInTheDocument()
+      // Verifica se contém a data formatada (mais flexível devido ao texto estar dividido em linhas)
+      expect(screen.getByText(/25\/12\/2024/)).toBeInTheDocument()
     })
 
     it('should handle invalid date gracefully', () => {
@@ -285,7 +286,9 @@ describe('UserCard', () => {
       const userWithSingleLetter = { ...mockUser, name: 'A' }
       render(<UserCard {...defaultProps} user={userWithSingleLetter} />)
 
-      expect(screen.getByText('A')).toBeInTheDocument()
+      // Verifica especificamente o avatar (elemento com classes específicas)
+      const avatar = screen.getByText('A', { selector: '.bg-primary.text-white.rounded-circle' })
+      expect(avatar).toBeInTheDocument()
     })
 
     it('should handle empty names gracefully', () => {

@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useUsers } from '../../hooks/useUsers';
 import UsersList from '../../components/UsersList';
+import UserFormModal from '../../components/UserFormModal';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import type { User } from '../../types/entities';
+import type { CreateUserData, UpdateUserData } from '../../types/user';
 
 const UsersListPage = () => {
   const {
@@ -10,11 +12,14 @@ const UsersListPage = () => {
     loading,
     error,
     fetchUsers,
+    createUser,
+    updateUser,
     deleteUser
   } = useUsers();
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const breadcrumbs = [
     { label: 'Home', href: '/' },
@@ -24,8 +29,7 @@ const UsersListPage = () => {
 
   const handleUserEdit = (user: User) => {
     setEditingUser(user);
-    // TODO: Abrir modal de edição quando implementado
-    console.log('Editar usuário:', user);
+    setShowFormModal(true);
   };
 
   const handleUserDelete = async (userId: string) => {
@@ -33,9 +37,41 @@ const UsersListPage = () => {
   };
 
   const handleCreateUser = () => {
-    setShowCreateForm(true);
-    // TODO: Abrir modal de criação quando implementado
-    console.log('Criar novo usuário');
+    setEditingUser(null);
+    setShowFormModal(true);
+  };
+
+  const handleFormSubmit = async (userData: Omit<User, 'id' | 'created_at'>) => {
+    setIsSubmitting(true);
+    try {
+      if (editingUser) {
+        // Editar usuário existente
+        const updateData: UpdateUserData = {
+          id: editingUser.id,
+          name: userData.name,
+          email: userData.email,
+          role: userData.role,
+          organization_id: userData.organization_id
+        };
+        await updateUser(updateData);
+      } else {
+        // Criar novo usuário - usa uma senha padrão que o usuário pode alterar
+        const createData: CreateUserData = {
+          name: userData.name,
+          email: userData.email,
+          password: 'Senha123!', // TODO: Gerar senha aleatória ou pedir ao usuário
+          role: userData.role,
+          organization_id: userData.organization_id
+        };
+        await createUser(createData);
+      }
+      // Recarregar lista após sucesso
+      await fetchUsers();
+      setShowFormModal(false);
+      setEditingUser(null);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleRefresh = () => {
@@ -56,7 +92,7 @@ const UsersListPage = () => {
         <button
           className="btn btn-primary"
           onClick={handleCreateUser}
-          disabled={loading}
+          disabled={loading || isSubmitting}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="me-2" viewBox="0 0 16 16">
             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
@@ -154,28 +190,17 @@ const UsersListPage = () => {
         onRefresh={handleRefresh}
       />
 
-      {/* TODO: Modais de criação e edição serão implementados posteriormente */}
-      {showCreateForm && (
-        <div className="alert alert-info">
-          Modal de criação será implementado em breve.
-          <button
-            type="button"
-            className="btn-close ms-2"
-            onClick={() => setShowCreateForm(false)}
-          ></button>
-        </div>
-      )}
-
-      {editingUser && (
-        <div className="alert alert-info">
-          Modal de edição será implementado em breve para o usuário: {editingUser.name}
-          <button
-            type="button"
-            className="btn-close ms-2"
-            onClick={() => setEditingUser(null)}
-          ></button>
-        </div>
-      )}
+      {/* Modal de criação/edição */}
+      <UserFormModal
+        isOpen={showFormModal}
+        onClose={() => {
+          setShowFormModal(false);
+          setEditingUser(null);
+        }}
+        onSubmit={handleFormSubmit}
+        editingUser={editingUser}
+        isLoading={isSubmitting}
+      />
     </>
   );
 };
