@@ -1,23 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 import { ProductForm } from '../Products/ProductForm';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import { ROUTES } from '../../config/routes';
 
 export const CreateProductPage = () => {
   const navigate = useNavigate();
 
   const handleSuccess = () => {
-    navigate('/ong/products');
+    navigate(ROUTES.ONG.PRODUCTS);
   };
 
   const handleCancel = () => {
-    navigate('/ong/products');
+    navigate(ROUTES.ONG.PRODUCTS);
   };
 
   const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Dashboard', href: '/ong' },
-    { label: 'Products', href: '/ong/products' },
-    { label: 'New', href: '/ong/products/new' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Dashboard', href: ROUTES.ONG.DASHBOARD },
+    { label: 'Products', href: ROUTES.ONG.PRODUCTS },
+    { label: 'New', href: ROUTES.ONG.PRODUCTS_NEW },
   ];
 
   return (

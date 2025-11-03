@@ -22,7 +22,7 @@ class PublicProductsService {
       return mockPublicProductsService.getProducts(filters)
     }
 
-    const { data } = await axios.get('/api/public/products', {
+    const { data } = await axios.get('/api/public/catalog', {
       params: { page: 1, limit: 12, ...filters },
     })
     return data

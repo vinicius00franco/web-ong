@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import StatCard from './StatCard';
 import SwipeContainer from '../SwipeContainer';
+import { ROUTES } from '../../config/routes';
 
 /**
  * Ícones SVG reutilizáveis
@@ -57,7 +58,7 @@ const DashboardStats = memo(() => {
       icon: Icons.Products,
       color: 'primary' as const,
       trend: { value: 12, isPositive: true, label: 'vs. mês anterior' },
-      onClick: () => navigate('/ong/products'),
+      onClick: () => navigate(ROUTES.ONG.PRODUCTS),
     },
     {
       id: 'donations',

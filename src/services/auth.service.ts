@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from './axios';
 import './axios-logger';
-import type { LoginCredentials, LoginResponse, User } from '../types/entities';
+import type { LoginCredentials, LoginResponse, RegisterCredentials, RegisterResponse, User } from '../types/entities';
 import { configManager } from '../config/app.config';
 import { mockAuthService } from '../mocks';
 
@@ -18,6 +18,23 @@ class AuthService {
     }
 
     const { data } = await axios.post('/api/auth/login', credentials);
+    return data;
+  }
+
+  async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
+    if (this.useMock) {
+      // Mock register - apenas simula sucesso
+      return {
+        success: true,
+        data: {
+          id: Date.now(),
+          name: credentials.name,
+          email: credentials.email
+        }
+      };
+    }
+
+    const { data } = await axios.post('/api/auth/register', credentials);
     return data;
   }
 

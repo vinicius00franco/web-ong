@@ -9,15 +9,16 @@ import OngDashboard from './pages/OngDashboard';
 import { ProductsPage } from './pages/Products';
 import { CreateProductPage } from './pages/Products/CreateProduct';
 import { EditProductPage } from './pages/Products/EditProduct';
+import { ROUTES } from './config/routes';
 
 export const AppRoutes = () => (
   <Routes>
     <Route element={<GlobalLayout />}>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/login" element={<Login />} />
+      <Route path={ROUTES.HOME} element={<Home />} />
+      <Route path={ROUTES.ABOUT} element={<About />} />
+      <Route path={ROUTES.LOGIN} element={<Login />} />
 
-      <Route path="/ong" element={
+      <Route path={ROUTES.ONG.ROOT} element={
         <ProtectedRoute>
           <OngLayout />
         </ProtectedRoute>

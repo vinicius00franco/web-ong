@@ -4,13 +4,14 @@ import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { useAuth } from '../../contexts/AuthContext';
+import { ROUTES } from '../../config/routes';
 
 const About: React.FC = () => {
   const navigate = useNavigate();
   const { token, user } = useAuth();
 
   const handleLogin = () => {
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   };
 
   return (
@@ -38,7 +39,7 @@ const About: React.FC = () => {
                   volunteer coordination, donation tracking, and reporting capabilities.
                 </Card.Text>
                 <div className="d-flex gap-2">
-                  <Button variant="primary" onClick={() => navigate('/')}>Home</Button>
+                  <Button variant="primary" onClick={() => navigate(ROUTES.HOME)}>Home</Button>
                   {!token && (
                     <Button variant="success" onClick={handleLogin}>Get Started</Button>
                   )}

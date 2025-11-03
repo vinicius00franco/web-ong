@@ -8,6 +8,7 @@ import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { EmptyState } from '../../components/EmptyState/EmptyState';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import { ROUTES } from '../../config/routes';
 
 export const ProductsList = () => {
   const navigate = useNavigate();
@@ -34,11 +35,11 @@ export const ProductsList = () => {
   }, []);
 
   const handleCreateProduct = () => {
-    navigate('/ong/products/new');
+    navigate(ROUTES.ONG.PRODUCTS_NEW);
   };
 
   const handleEditProduct = (productId: string) => {
-    navigate(`/ong/products/${productId}/edit`);
+    navigate(ROUTES.buildProductEdit(productId));
   };
 
   const handleDeleteConfirmation = (productId: string) => {

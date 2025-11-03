@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { publicProductsService } from '../../services/public-products.service';
 import { publicSearchService } from '../../services/public-search.service';
 import type { ProductsResponse } from '../../types/product';
+import { ROUTES } from '../../config/routes';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Home: React.FC = () => {
   const [interpretationText, setInterpretationText] = useState<string | null>(null);
 
   const handleLogin = () => {
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   };
 
   const handleLogout = () => {
@@ -96,7 +97,7 @@ const Home: React.FC = () => {
                   This is a platform designed to help NGOs manage their operations efficiently.
                   Join us in making a difference in the world.
                 </Card.Text>
-                <Button variant="primary" onClick={() => navigate('/about')}>Learn More</Button>
+                <Button variant="primary" onClick={() => navigate(ROUTES.ABOUT)}>Learn More</Button>
               </Card.Body>
             </Card>
           </div>
@@ -110,7 +111,7 @@ const Home: React.FC = () => {
                 {!token ? (
                   <Button variant="success" onClick={handleLogin}>Sign Up</Button>
                 ) : (
-                  <Button variant="info" onClick={() => navigate('/ong')}>Dashboard</Button>
+                  <Button variant="info" onClick={() => navigate(ROUTES.ONG.DASHBOARD)}>Dashboard</Button>
                 )}
               </Card.Body>
             </Card>

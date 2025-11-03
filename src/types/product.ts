@@ -3,7 +3,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category: string;
+  category_id: number; // Alterado de category: string para category_id: number
   image_url: string;
   stock_qty: number;
   weight_grams: number;
@@ -16,7 +16,7 @@ export interface CreateProductData {
   name: string;
   description: string;
   price: number;
-  category: string;
+  category_id: number; // Alterado de category: string para category_id: number
   image_url: string;
   stock_qty: number;
   weight_grams: number;
@@ -27,7 +27,7 @@ export interface UpdateProductData extends Partial<CreateProductData> {
 }
 
 export interface ProductFilters {
-  category?: string;
+  category_id?: number; // Alterado de category?: string para category_id?: number
   name?: string;
   page?: number;
   limit?: number;

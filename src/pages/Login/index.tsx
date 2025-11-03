@@ -5,6 +5,7 @@ import { authService } from '../../services/auth.service';
 import Header from '../../components/Header';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
+import { ROUTES } from '../../config/routes';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -35,7 +36,7 @@ const Login: React.FC = () => {
       login(token, user);
       
       console.log('🧭 Login: Navegando para /ong...');
-      navigate('/ong');
+      navigate(ROUTES.ONG.DASHBOARD);
     } catch (err) {
       console.error('❌ Login: Erro durante autenticação:', err);
       setError(err instanceof Error ? err.message : 'Falha no login');
@@ -85,9 +86,12 @@ const Login: React.FC = () => {
                   {/* Dica para usuários de desenvolvimento */}
                   <div className="alert alert-info" role="alert">
                     <small>
-                      <strong>💡 Credenciais de teste:</strong><br />
-                      Email: admin@ong.com | Senha: admin123<br />
-                      Email: maria@ong.com | Senha: maria123
+                      <strong>💡 Credenciais de teste (do banco de dados):</strong><br />
+                      ONG A: onga@example.com | Senha: password<br />
+                      ONG B: ongb@example.com | Senha: password<br />
+                      <br />
+                      <strong>📝 Ou registre uma nova ONG:</strong><br />
+                      Use o endpoint POST /api/auth/register
                     </small>
                   </div>
 
@@ -97,7 +101,7 @@ const Login: React.FC = () => {
                     </Button>
                     <Button 
                       variant="secondary" 
-                      onClick={() => navigate('/')}
+                      onClick={() => navigate(ROUTES.HOME)}
                       disabled={loading}
                     >
                       Back to Home

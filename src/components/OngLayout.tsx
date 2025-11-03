@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Header from './Header';
+import { ROUTES } from '../config/routes';
 
 const OngLayout: React.FC = () => {
   const { logout, user } = useAuth();
@@ -9,7 +10,7 @@ const OngLayout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   };
 
   return (

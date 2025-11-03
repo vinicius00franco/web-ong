@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { productsService } from '../../services/products.service';
 import type { Product, UpdateProductData } from '../../types/product';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import { ROUTES } from '../../config/routes';
 
 export const EditProductPage = () => {
   const navigate = useNavigate();
@@ -34,11 +35,11 @@ export const EditProductPage = () => {
   }, [id]);
 
   const handleSuccess = () => {
-    navigate('/ong/products');
+    navigate(ROUTES.ONG.PRODUCTS);
   };
 
   const handleCancel = () => {
-    navigate('/ong/products');
+    navigate(ROUTES.ONG.PRODUCTS);
   };
 
   if (loading) {
@@ -54,10 +55,10 @@ export const EditProductPage = () => {
   }
 
   const breadcrumbs = [
-    { label: 'Home', href: '/' },
-    { label: 'Dashboard', href: '/ong' },
-    { label: 'Products', href: '/ong/products' },
-    { label: 'Edit', href: `/ong/products/${id}/edit` },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Dashboard', href: ROUTES.ONG.DASHBOARD },
+    { label: 'Products', href: ROUTES.ONG.PRODUCTS },
+    { label: 'Edit', href: ROUTES.buildProductEdit(id!) },
   ];
   return (
     <div>
