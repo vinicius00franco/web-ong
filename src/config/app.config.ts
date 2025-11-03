@@ -24,7 +24,12 @@ const envNodeEnv = import.meta.env.VITE_NODE_ENV;
 
 // Configuração padrão baseada nas variáveis de ambiente
 const defaultConfig: AppConfig = {
-  useMockData: envUseMockData === 'true' || envUseMockData === true || true, // Fallback para true
+  // Respeita VITE_USE_MOCK_DATA quando definido ("true"/"false");
+  // caso não definido, permanece true por padrão (modo mock em dev)
+  useMockData:
+    envUseMockData !== undefined
+      ? String(envUseMockData) === 'true'
+      : true,
   mockDelay: envMockDelay ? parseInt(envMockDelay as string, 10) : 500,
   apiBaseUrl: envApiBaseUrl as string || 'http://localhost:3000',
   llmApiUrl: envLlmApiUrl as string || 'http://localhost:8000/api/v1/parse-query',
@@ -70,7 +75,8 @@ class ConfigManager {
   // Restaura configuração do localStorage (sobrescreve .env se existir)
   loadFromStorage(): void {
     const savedUseMock = localStorage.getItem('useMockData');
-    if (savedUseMock !== null) {
+    // Só aplica o valor salvo se a ENV NÃO estiver explicitamente definida
+    if (savedUseMock !== null && envUseMockData === undefined) {
       this.config.useMockData = JSON.parse(savedUseMock);
       this.log('Configuração carregada do localStorage');
     }

@@ -1,8 +1,24 @@
 import axios from 'axios';
 import { configManager } from '../config/app.config';
 
-// Configura a base URL do axios baseada na configuração
-axios.defaults.baseURL = configManager.getConfig().apiBaseUrl;
+// Configura a base URL do axios baseada na configuração,
+// mas em desenvolvimento (Vite dev server em :5173) usamos proxy de '/api'
+// para evitar CORS. Assim, mantemos as rotas começando com '/api' e deixamos
+// o Vite encaminhar para o backend.
+(() => {
+  const cfg = configManager.getConfig();
+  let baseURL = cfg.apiBaseUrl;
+
+  // Em dev no Vite, prefira baseURL relativa para usar o proxy do Vite
+  if (cfg.nodeEnv === 'development' && typeof window !== 'undefined') {
+    const isViteDev = window.location && window.location.port === '5173';
+    if (isViteDev) {
+      baseURL = '';
+    }
+  }
+
+  axios.defaults.baseURL = baseURL;
+})();
 
 // Configura timeout padrão
 axios.defaults.timeout = 10000;

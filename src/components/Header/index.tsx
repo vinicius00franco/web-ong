@@ -57,17 +57,55 @@ const Header: React.FC<HeaderProps> = ({
             <div className="navbar-nav">
               {isAuthenticated ? (
                 <>
-                  <span className="navbar-text me-3">
+                  {/* Desktop: mostra nome e botão */}
+                  <span className="navbar-text me-3 d-none d-lg-inline">
                     Welcome, {userName}
                   </span>
-                  <Button variant="danger" onClick={onLogout}>
+                  <Button variant="danger" className="d-none d-lg-block" onClick={onLogout}>
                     Logout
                   </Button>
+                  
+                  {/* Mobile: ícone de usuário com dropdown */}
+                  <div className="dropdown d-lg-none">
+                    <button
+                      className="btn btn-link nav-link dropdown-toggle"
+                      type="button"
+                      id="userDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="bi bi-person-circle" style={{ fontSize: '1.5rem' }}></i>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                      <li className="dropdown-item-text">
+                        <small>Welcome, {userName}</small>
+                      </li>
+                      <li><hr className="dropdown-divider" /></li>
+                      <li>
+                        <button className="dropdown-item" onClick={onLogout}>
+                          <i className="bi bi-box-arrow-right me-2"></i>
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
                 </>
               ) : (
-                <Button variant="primary" onClick={onLogin}>
-                  Login
-                </Button>
+                <>
+                  {/* Desktop: botão de login */}
+                  <Button variant="primary" className="d-none d-lg-block" onClick={onLogin}>
+                    Login
+                  </Button>
+                  
+                  {/* Mobile: ícone de login */}
+                  <button
+                    className="btn btn-link nav-link d-lg-none"
+                    onClick={onLogin}
+                    aria-label="Login"
+                  >
+                    <i className="bi bi-box-arrow-in-right" style={{ fontSize: '1.5rem' }}></i>
+                  </button>
+                </>
               )}
             </div>
           )}

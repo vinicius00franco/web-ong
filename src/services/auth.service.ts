@@ -12,13 +12,71 @@ class AuthService {
     return configManager.getConfig().useMockData;
   }
 
+  /**
+   * Converte a resposta de login da API para o formato esperado pelo frontend
+   * API retorna: { success: true, data: { accessToken: "...", organizationId: 1 } }
+   * Axios interceptor envolve em .data novamente
+   */
+  private mapLoginResponse(apiResponseBody: any): LoginResponse {
+    // apiResponseBody é o .data da resposta do axios
+    // Estrutura: { success: true, data: { accessToken, organizationId } }
+    
+    const token = apiResponseBody.data?.accessToken || apiResponseBody.accessToken;
+    
+    if (!token) {
+      console.error('Token não encontrado. Response:', apiResponseBody);
+      throw new Error('Token não encontrado na resposta');
+    }
+
+    const decoded = this.decodeJWT(token);
+
+    return {
+      token,
+      user: {
+        id: String(decoded.sub),
+        name: decoded.email,
+        email: decoded.email,
+        organization_id: String(decoded.organizationId),
+        role: 'admin',
+        created_at: new Date().toISOString()
+      }
+    };
+  }
+
+  /**
+   * Decodifica um JWT (sem validar assinatura, apenas extrai payload)
+   */
+  private decodeJWT(token: string): any {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        throw new Error('Token inválido');
+      }
+
+      const decoded = JSON.parse(
+        atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
+      );
+
+      return decoded;
+    } catch (error) {
+      console.error('Erro ao decodificar JWT:', error);
+      throw new Error('Falha ao processar token');
+    }
+  }
+
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     if (this.useMock) {
       return mockAuthService.login(credentials);
     }
 
-    const { data } = await axios.post('/api/auth/login', credentials);
-    return data;
+    try {
+      const response = await axios.post('/api/auth/login', credentials);
+      // axios interceptor já desembrulha .data, então response aqui é { success, data: { accessToken, ... } }
+      return this.mapLoginResponse(response.data);
+    } catch (error: any) {
+      console.error('Erro na requisição de login:', error);
+      throw new Error('Email ou senha inválidos');
+    }
   }
 
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
@@ -37,8 +95,16 @@ class AuthService {
       };
     }
 
-    const { data } = await axios.post('/api/auth/register', credentials);
-    return data;
+    try {
+      const response = await axios.post('/api/auth/register', credentials);
+      return response.data;
+    } catch (error: any) {
+      console.error('Erro na requisição de registro:', error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Falha no registro. Tente novamente.');
+    }
   }
 
   async getCurrentUser(): Promise<User> {
