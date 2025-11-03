@@ -38,14 +38,21 @@ class AuthService {
     return data;
   }
 
-  async getCurrentUser(token: string): Promise<User> {
+  async getCurrentUser(): Promise<User> {
     if (this.useMock) {
-      return mockAuthService.getCurrentUser(token);
+      // Para mock, retorna dados básicos do usuário atual
+      // Em um cenário real, isso viria do contexto de autenticação
+      return {
+        id: 'user-mock',
+        name: 'Usuário Mock',
+        email: 'mock@example.com',
+        organization_id: 'org-mock',
+        role: 'admin',
+        created_at: new Date().toISOString()
+      };
     }
 
-    const { data } = await axios.get('/api/auth/me', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const { data } = await axios.get('/api/auth/me');
     return data;
   }
 

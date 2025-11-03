@@ -102,7 +102,10 @@ const OngDashboard: React.FC = () => {
                 </h3>
               </div>
               <span className="badge bg-success">
-                +{Math.round((donationsChartData[donationsChartData.length - 1].value / donationsChartData[donationsChartData.length - 2].value - 1) * 100)}% vs mês anterior
+                {donationsChartData.length >= 2
+                  ? `+${Math.round((donationsChartData[donationsChartData.length - 1].value / donationsChartData[donationsChartData.length - 2].value - 1) * 100)}% vs mês anterior`
+                  : '+0% vs mês anterior'
+                }
               </span>
             </div>
             <LineChart 

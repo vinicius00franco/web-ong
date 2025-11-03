@@ -47,22 +47,17 @@ class MockAuthService {
     };
   }
 
-  async getCurrentUser(token: string): Promise<User> {
+  async getCurrentUser(): Promise<User> {
     await simulateDelay();
 
-    // Extrai userId do token fake
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const user = this.users.find(u => u.id === payload.userId);
-      
-      if (!user) {
-        throw new Error('Usuário não encontrado');
-      }
-
-      return user;
-    } catch {
-      throw new Error('Token inválido');
+    // Simula busca do usuário atual (normalmente viria do contexto)
+    // Retorna o primeiro usuário como exemplo
+    const user = this.users[0];
+    if (!user) {
+      throw new Error('Usuário não encontrado');
     }
+
+    return user;
   }
 
   async logout(): Promise<void> {

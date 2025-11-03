@@ -3,23 +3,23 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category_id: number; // Alterado de category: string para category_id: number
-  image_url: string;
-  stock_qty: number;
-  weight_grams: number;
-  organization_id: string;
-  created_at: string;
-  updated_at: string;
+  categoryId: number; // Corrigido para camelCase conforme API
+  imageUrl: string; // Corrigido para camelCase conforme API
+  stockQty: number;
+  weightGrams: number;
+  organizationId: string;
+  createdAt: string; // Corrigido para camelCase conforme API
+  updatedAt?: string; // Corrigido para camelCase conforme API
 }
 
 export interface CreateProductData {
   name: string;
   description: string;
   price: number;
-  category_id: number; // Alterado de category: string para category_id: number
-  image_url: string;
-  stock_qty: number;
-  weight_grams: number;
+  categoryId: number; // Corrigido para camelCase conforme API
+  imageUrl: string; // Corrigido para camelCase conforme API
+  stockQty: number;
+  weightGrams: number;
 }
 
 export interface UpdateProductData extends Partial<CreateProductData> {
@@ -27,7 +27,7 @@ export interface UpdateProductData extends Partial<CreateProductData> {
 }
 
 export interface ProductFilters {
-  category_id?: number; // Alterado de category?: string para category_id?: number
+  categoryId?: number; // Corrigido para camelCase conforme API
   name?: string;
   page?: number;
   limit?: number;
@@ -39,4 +39,46 @@ export interface ProductsResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  createdAt: string;
+}
+
+export interface OrderItem {
+  id: number;
+  orderId: number;
+  productId: number;
+  quantity: number;
+  priceAtTime: number;
+  organizationId: string;
+  createdAt: string;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+  };
+}
+
+export interface Order {
+  id: number;
+  customerId?: number;
+  items: OrderItem[];
+  total: number;
+  createdAt: string;
+}
+
+export interface CreateOrderData {
+  customerId?: number;
+  items: {
+    productId: number;
+    quantity: number;
+  }[];
+}
+
+export interface OrdersResponse {
+  success: boolean;
+  data: Order[];
 }
