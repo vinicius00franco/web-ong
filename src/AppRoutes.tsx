@@ -10,6 +10,7 @@ import OngDashboard from './pages/OngDashboard';
 import { ProductsPage } from './pages/Products';
 import { CreateProductPage } from './pages/Products/CreateProduct';
 import { EditProductPage } from './pages/Products/EditProduct';
+import UsersListPage from './pages/Users';
 import { ROUTES } from './config/routes';
 
 export const AppRoutes = () => (
@@ -29,6 +30,7 @@ export const AppRoutes = () => (
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/new" element={<CreateProductPage />} />
         <Route path="products/:id/edit" element={<EditProductPage />} />
+        <Route path="users" element={<UsersListPage />} />
       </Route>
     </Route>
   </Routes>

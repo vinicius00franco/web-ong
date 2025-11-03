@@ -17,6 +17,7 @@ export const ROUTES = {
     PRODUCTS: '/ong/products',
     PRODUCTS_NEW: '/ong/products/new',
     PRODUCTS_EDIT: (id: string | number) => `/ong/products/${id}/edit`,
+    USERS: '/ong/users',
   },
 
   // Utilitários para construção de rotas dinâmicas
