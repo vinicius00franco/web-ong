@@ -23,7 +23,10 @@ class AuthService {
 
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     if (this.useMock) {
-      // Mock register - apenas simula sucesso
+      // Mock register - simula erro se email já existir
+      if (credentials.email === 'existing@example.com') {
+        throw new Error('Email já cadastrado');
+      }
       return {
         success: true,
         data: {

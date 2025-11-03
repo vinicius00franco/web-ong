@@ -8,6 +8,7 @@ export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   LOGIN: '/login',
+  REGISTER: '/register',
 
   // Rotas da ONG (protegidas)
   ONG: {
@@ -25,5 +26,5 @@ export const ROUTES = {
 /**
  * Tipos para as rotas
  */
-export type PublicRoutes = typeof ROUTES.HOME | typeof ROUTES.ABOUT | typeof ROUTES.LOGIN;
+export type PublicRoutes = typeof ROUTES.HOME | typeof ROUTES.ABOUT | typeof ROUTES.LOGIN | typeof ROUTES.REGISTER;
 export type OngRoutes = typeof ROUTES.ONG[keyof typeof ROUTES.ONG] | string; // string para rotas dinâmicas
