@@ -13,14 +13,40 @@ class ProductsService {
   }
 
   /**
+   * Garante tipos corretos e compatibilidade de chaves usadas na UI
+   */
+  private normalizeProduct(item: any): Product {
+    // Coerção de price para número (API pode enviar string)
+    const priceNumber = typeof item?.price === 'string' ? parseFloat(item.price) : item?.price;
+
+    return {
+      // Identificador
+      id: String(item.id),
+      // Campos exibidos na UI (mantemos chaves esperadas pela UI em snake_case via mapeamento no componente/store quando necessário)
+      // Nosso tipo Product usa camelCase conforme pasta types, então mapeamos para ele aqui
+      name: item.name,
+      description: item.description ?? '',
+      price: Number.isFinite(priceNumber) ? priceNumber : 0,
+      // Tentativas de normalização de nomenclatura
+      categoryId: item.categoryId ?? item.category_id ?? item.categoryId ?? 0,
+      imageUrl: item.imageUrl ?? item.image_url ?? '',
+      stockQty: item.stockQty ?? item.stock_qty ?? 0,
+      weightGrams: item.weightGrams ?? item.weight_grams ?? 0,
+      organizationId: item.organizationId ?? item.organization_id ?? '',
+      createdAt: item.createdAt ?? item.created_at ?? new Date().toISOString(),
+      updatedAt: item.updatedAt ?? item.updated_at ?? undefined,
+    } as Product;
+  }
+
+  /**
    * Normaliza a resposta da API para o formato esperado
    */
   private normalizeProductsResponse(response: any): ProductsResponse {
-
+    // Mapeia itens garantindo tipos esperados na UI/Tipos
     // Se for um array direto, converter para ProductsResponse
     if (Array.isArray(response)) {
       return {
-        products: response,
+        products: response.map((p) => this.normalizeProduct(p)),
         total: response.length,
         page: 1,
         limit: response.length,
@@ -31,7 +57,7 @@ class ProductsService {
     // Se tiver estrutura { success: true, data: [...] }
     if (response?.success && Array.isArray(response.data)) {
       return {
-        products: response.data,
+        products: response.data.map((p: any) => this.normalizeProduct(p)),
         total: response.data.length,
         page: 1,
         limit: response.data.length,
@@ -42,7 +68,7 @@ class ProductsService {
     // Se já tiver a estrutura correta
     if (response?.products && Array.isArray(response.products)) {
       return {
-        products: response.products,
+        products: response.products.map((p: any) => this.normalizeProduct(p)),
         total: response.total || response.products.length,
         page: response.page || 1,
         limit: response.limit || response.products.length,
@@ -63,7 +89,11 @@ class ProductsService {
 
   async getProducts(filters: ProductFilters = {}): Promise<ProductsResponse> {
     if (this.useMock) {
-      return mockProductsService.getProducts(filters);
+      const res = await mockProductsService.getProducts(filters);
+      return {
+        ...res,
+        products: res.products.map((p: any) => this.normalizeProduct(p)),
+      };
     }
 
     try {
@@ -79,17 +109,14 @@ class ProductsService {
 
   async getProduct(id: string): Promise<Product> {
     if (this.useMock) {
-      return mockProductsService.getProduct(id);
+      const p = await mockProductsService.getProduct(id);
+      return this.normalizeProduct(p as any);
     }
 
     try {
       const { data } = await axios.get(`/api/products/${id}`);
-      
-      // Normalizar se necessário
-      if (data?.data && typeof data.data === 'object') {
-        return data.data;
-      }
-      return data;
+      const payload = data?.data && typeof data.data === 'object' ? data.data : data;
+      return this.normalizeProduct(payload);
     } catch (error) {
       console.error(`❌ Erro ao buscar produto ${id}:`, error);
       throw error;
@@ -98,17 +125,14 @@ class ProductsService {
 
   async createProduct(productData: CreateProductData): Promise<Product> {
     if (this.useMock) {
-      return mockProductsService.createProduct(productData);
+      const p = await mockProductsService.createProduct(productData);
+      return this.normalizeProduct(p as any);
     }
 
     try {
       const { data } = await axios.post('/api/products', productData);
-      
-      // Normalizar se necessário
-      if (data?.data && typeof data.data === 'object') {
-        return data.data;
-      }
-      return data;
+      const payload = data?.data && typeof data.data === 'object' ? data.data : data;
+      return this.normalizeProduct(payload);
     } catch (error) {
       console.error('❌ Erro ao criar produto:', error);
       throw error;
@@ -117,18 +141,15 @@ class ProductsService {
 
   async updateProduct(productData: UpdateProductData): Promise<Product> {
     if (this.useMock) {
-      return mockProductsService.updateProduct(productData);
+      const p = await mockProductsService.updateProduct(productData);
+      return this.normalizeProduct(p as any);
     }
 
     try {
       const { id, ...updateData } = productData;
       const { data } = await axios.put(`/api/products/${id}`, updateData);
-      
-      // Normalizar se necessário
-      if (data?.data && typeof data.data === 'object') {
-        return data.data;
-      }
-      return data;
+      const payload = data?.data && typeof data.data === 'object' ? data.data : data;
+      return this.normalizeProduct(payload);
     } catch (error) {
       console.error('❌ Erro ao atualizar produto:', error);
       throw error;

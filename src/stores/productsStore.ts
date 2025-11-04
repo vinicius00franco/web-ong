@@ -18,7 +18,7 @@ interface ProductsState {
   reset: () => void;
 }
 
-export const useProductsStore = create<ProductsState>((set, get) => ({
+export const useProductsStore = create<ProductsState>((set) => ({
   // Initial state
   products: [],
   loading: false,
@@ -67,7 +67,7 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     set({ loading: true, error: null });
     
     try {
-      const updatedProduct = await productsService.updateProduct(id, updates);
+      const updatedProduct = await productsService.updateProduct({ id, ...updates });
       set(state => ({
         products: state.products.map(product => 
           product.id === id ? updatedProduct : product

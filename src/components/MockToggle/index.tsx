@@ -40,7 +40,7 @@ export const MockToggle: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Configurações de desenvolvimento"
       >
-        <span className="mock-toggle__icon">⚙️</span>
+        <span>⚙️</span>
       </button>
 
       {isOpen && (

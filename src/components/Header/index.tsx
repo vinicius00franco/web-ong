@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
                 <>
                   {/* Desktop: mostra nome e botão */}
                   <span className="navbar-text me-3 d-none d-lg-inline">
-                    Welcome, {userName}
+                    Bem-vindo(a), {userName}
                   </span>
                   <Button variant="danger" className="d-none d-lg-block" onClick={onLogout}>
                     Logout
@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                       <li className="dropdown-item-text">
-                        <small>Welcome, {userName}</small>
+                        <small>Bem-vindo(a), {userName}</small>
                       </li>
                       <li><hr className="dropdown-divider" /></li>
                       <li>

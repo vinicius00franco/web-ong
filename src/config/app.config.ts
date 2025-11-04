@@ -25,11 +25,11 @@ const envNodeEnv = import.meta.env.VITE_NODE_ENV;
 // Configuração padrão baseada nas variáveis de ambiente
 const defaultConfig: AppConfig = {
   // Respeita VITE_USE_MOCK_DATA quando definido ("true"/"false");
-  // caso não definido, permanece true por padrão (modo mock em dev)
+  // caso não definido, usa API por padrão
   useMockData:
     envUseMockData !== undefined
       ? String(envUseMockData) === 'true'
-      : true,
+      : false,
   mockDelay: envMockDelay ? parseInt(envMockDelay as string, 10) : 500,
   apiBaseUrl: envApiBaseUrl as string || 'http://localhost:3000',
   llmApiUrl: envLlmApiUrl as string || 'http://localhost:8000/api/v1/parse-query',

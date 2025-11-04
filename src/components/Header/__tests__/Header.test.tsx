@@ -164,7 +164,7 @@ describe('Header Component', () => {
     fireEvent.click(userIcon);
 
     // Should show welcome message in dropdown (mobile version)
-    const welcomeMessages = screen.getAllByText(/Welcome, John Doe/i);
+  const welcomeMessages = screen.getAllByText(/Bem-vindo\(a\), John Doe/i);
     expect(welcomeMessages).toHaveLength(2); // desktop and mobile
 
     // Find the mobile one (inside dropdown)

@@ -40,20 +40,13 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('🚨 Axios Error Interceptor:', {
-      status: error.response?.status,
-      url: error.config?.url,
-      method: error.config?.method,
-      message: error.message,
-      hasToken: !!useAuthStore.getState().token
-    });
+    // Silent axios error interceptor (logs removidos)
 
     if (error.response?.status === 401) {
       const { checkTokenExpiration } = useAuthStore.getState();
 
       // Only logout if token is actually expired, not just any 401 error
       if (checkTokenExpiration()) {
-        console.warn('⏰ Token expirado - redirecionando para login');
         // Clear auth state
         useAuthStore.getState().logout();
         // Redirect to login
@@ -61,7 +54,6 @@ axios.interceptors.response.use(
           window.location.href = '/login';
         }
       } else {
-        console.warn('⚠️ Recebido 401 mas token não está expirado - pode ser erro de permissão');
         // Don't logout, just reject the promise
       }
     }

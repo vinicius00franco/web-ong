@@ -7,10 +7,11 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onEdit, onDelete }: ProductCardProps) => {
+  const categoryLabel = (product as any).category ?? (product as any).categoryName ?? `Categoria #${product.categoryId}`;
   return (
     <div className="card h-100">
       <img
-        src={product.image_url}
+        src={product.imageUrl}
         className="card-img-top img-fluid"
         alt={product.name}
         loading="lazy"
@@ -22,7 +23,7 @@ export const ProductCard = ({ product, onEdit, onDelete }: ProductCardProps) => 
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text">{product.description}</p>
         <p className="card-text">
-          <strong>Categoria:</strong> {product.category}
+          <strong>Categoria:</strong> {categoryLabel}
         </p>
         <p className="card-text">
           <strong>Preço:</strong> R$ {product.price.toFixed(2).replace('.', ',')}

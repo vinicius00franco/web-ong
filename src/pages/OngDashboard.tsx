@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
-import { useAuth } from '../contexts/AuthContext';
 import { useDashboardWidgets } from '../hooks/useDashboardWidgets';
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardWidget from '../components/DashboardWidget';
@@ -12,7 +11,7 @@ import { LineChart, BarChart } from '../components/SimpleChart';
 import { configManager } from '../config/app.config';
 
 const OngDashboard: React.FC = () => {
-  const { user } = useAuth();
+  
   const {
     visibleWidgets,
     widgets,
@@ -251,7 +250,6 @@ const OngDashboard: React.FC = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 className="h2 mb-1">ONG Dashboard</h1>
-          <p className="text-muted mb-0">Bem-vindo(a), {user?.name}!</p>
         </div>
         
         <div className="btn-group" role="group">
