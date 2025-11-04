@@ -3,9 +3,11 @@ import { dashboardService } from '../services/dashboard.service';
 import type { RecentProduct, DonationChartData, DashboardActivity, VolunteerChartData, ProjectStatus, DashboardStats } from '../types/dashboard';
 
 /**
+ * @deprecated Use useDashboard() from '../hooks/useDashboard' instead
  * Hook customizado para buscar produtos recentes
  */
 export const useRecentProducts = () => {
+  console.warn('⚠️ useRecentProducts is deprecated. Use useDashboard() instead.');
   const [products, setProducts] = useState<RecentProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,9 +34,11 @@ export const useRecentProducts = () => {
 };
 
 /**
+ * @deprecated Use useDashboard() from '../hooks/useDashboard' instead
  * Hook customizado para buscar dados do gráfico de doações
  */
 export const useDonationsChart = () => {
+  console.warn('⚠️ useDonationsChart is deprecated. Use useDashboard() instead.');
   const [data, setData] = useState<DonationChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,9 +65,11 @@ export const useDonationsChart = () => {
 };
 
 /**
+ * @deprecated Use useDashboard() from '../hooks/useDashboard' instead
  * Hook customizado para buscar atividades recentes
  */
 export const useRecentActivities = () => {
+  console.warn('⚠️ useRecentActivities is deprecated. Use useDashboard() instead.');
   const [activities, setActivities] = useState<DashboardActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,9 +96,11 @@ export const useRecentActivities = () => {
 };
 
 /**
+ * @deprecated Use useDashboard() from '../hooks/useDashboard' instead
  * Hook customizado para buscar dados do gráfico de voluntários
  */
 export const useVolunteersChart = () => {
+  console.warn('⚠️ useVolunteersChart is deprecated. Use useDashboard() instead.');
   const [data, setData] = useState<VolunteerChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -119,9 +127,11 @@ export const useVolunteersChart = () => {
 };
 
 /**
+ * @deprecated Use useDashboard() from '../hooks/useDashboard' instead
  * Hook customizado para buscar status dos projetos
  */
 export const useProjectsStatus = () => {
+  console.warn('⚠️ useProjectsStatus is deprecated. Use useDashboard() instead.');
   const [projects, setProjects] = useState<ProjectStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -148,9 +158,11 @@ export const useProjectsStatus = () => {
 };
 
 /**
+ * @deprecated Use useDashboardStats() from '../hooks/useDashboard' instead
  * Hook customizado para buscar estatísticas do dashboard
  */
 export const useDashboardStats = () => {
+  console.warn('⚠️ useDashboardStats is deprecated. Use the new useDashboardStats() from hooks/useDashboard instead.');
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -177,9 +189,11 @@ export const useDashboardStats = () => {
 };
 
 /**
+ * @deprecated Use useDashboardActivities() from '../hooks/useDashboard' instead
  * Hook customizado para buscar atividades do dashboard
  */
 export const useDashboardActivities = () => {
+  console.warn('⚠️ useDashboardActivities is deprecated. Use the new useDashboardActivities() from hooks/useDashboard instead.');
   const [activities, setActivities] = useState<DashboardActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

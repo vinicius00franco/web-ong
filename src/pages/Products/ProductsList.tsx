@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { productsService } from '../../services/products.service';
-import type { Product } from '../../types/product';
+import { useProductsStore } from '../../stores/productsStore';
 import { ProductCard } from '../../components/ProductCard';
 import { ProductCardSkeleton } from '../../components/ProductCardSkeleton';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
@@ -12,38 +11,16 @@ import { ROUTES } from '../../config/routes';
 
 export const ProductsList = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { products, loading, error, fetchProducts, deleteProduct } = useProductsStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await productsService.getProducts();
-        console.log('📦 Resposta da API de produtos:', response);
-        
-        // Handle both response formats: { products: [...] } or direct array
-        if (Array.isArray(response)) {
-          setProducts(response);
-        } else if (response && typeof response === 'object' && 'products' in response) {
-          setProducts(response.products || []);
-        } else {
-          console.error('❌ Formato de resposta inesperado:', response);
-          setProducts([]);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-        console.error('❌ Erro ao carregar produtos:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-  }, []);
+    // Fetch products only if not already loaded
+    if (products.length === 0 && !loading) {
+      fetchProducts();
+    }
+  }, [products.length, loading, fetchProducts]);
 
   const handleCreateProduct = () => {
     navigate(ROUTES.ONG.PRODUCTS_NEW);
@@ -61,18 +38,7 @@ export const ProductsList = () => {
   const handleDeleteProduct = async () => {
     if (productToDelete) {
       try {
-        await productsService.deleteProduct(productToDelete);
-        // Reload products after deletion
-        const response = await productsService.getProducts();
-        
-        // Handle both response formats
-        if (Array.isArray(response)) {
-          setProducts(response);
-        } else if (response && typeof response === 'object' && 'products' in response) {
-          setProducts(response.products || []);
-        } else {
-          setProducts([]);
-        }
+        await deleteProduct(productToDelete);
       } catch (err) {
         alert('Erro ao deletar produto: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       } finally {

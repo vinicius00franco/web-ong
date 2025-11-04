@@ -36,6 +36,7 @@ Clique no botão **⚙️** no canto inferior direito para:
 - **React 18** + **TypeScript**
 - **Vite** - Build tool ultrarrápido
 - **Bootstrap 5** - Framework CSS responsivo
+- **Zustand** - Gerenciamento de estado
 - **Vitest** - Framework de testes moderno
 - **React Router** - Navegação SPA
 - **Axios** - Cliente HTTP
@@ -52,6 +53,10 @@ src/
 │   │   ├── donations.mock.json
 │   │   └── organizations.mock.json
 │   └── services/             # Serviços mockados
+├── stores/                   # 🏪 Zustand stores
+│   ├── dashboardStore.ts    # Store do dashboard
+│   ├── productsStore.ts     # Store de produtos
+│   └── authStore.ts         # Store de autenticação
 ├── components/               # Componentes reutilizáveis
 │   ├── Button/
 │   ├── Card/
@@ -73,7 +78,8 @@ src/
 │   └── AuthContext.tsx
 ├── hooks/                   # Hooks customizados
 │   ├── useLocalStorage.ts
-│   └── useMockConfig.ts
+│   ├── useMockConfig.ts
+│   └── useDashboard.ts     # Hook simplificado do dashboard
 └── types/                   # Tipos TypeScript
     ├── product.ts
     └── entities.ts
@@ -84,6 +90,7 @@ src/
 ### ✅ Implementadas
 - ✨ Sistema completo de autenticação
 - 📦 CRUD de produtos com filtros e paginação
+- 🏪 **Gerenciamento de estado com Zustand**
 - 🎭 **Sistema de dados mockados centralizado**
 - 🔄 **Alternância mock/API em tempo real**
 - 🎨 Design responsivo (mobile-first)
@@ -181,6 +188,8 @@ VITE_API_BASE_URL=http://localhost:3000
 - **[AGENTS.md](./AGENTS.md)** - Diretrizes inteligentes de desenvolvimento
 - **[MOCK_SYSTEM.md](./MOCK_SYSTEM.md)** - Sistema de dados mockados (completo)
 - **[QUICKSTART_MOCKS.md](./QUICKSTART_MOCKS.md)** - Guia rápido de mocks
+- **[ZUSTAND_MIGRATION.md](./ZUSTAND_MIGRATION.md)** - Guia de migração para Zustand
+- **[ZUSTAND_IMPLEMENTATION_SUMMARY.md](./ZUSTAND_IMPLEMENTATION_SUMMARY.md)** - Resumo da implementação
 - **[plano-agil-frontend.md](./plano-agil-frontend.md)** - Planejamento ágil
 
 ## 🤝 Contribuindo
