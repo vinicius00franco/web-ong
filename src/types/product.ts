@@ -3,6 +3,8 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  // Nome da categoria (quando disponível em endpoints públicos)
+  category?: string;
   categoryId: number; // Corrigido para camelCase conforme API
   imageUrl: string; // Corrigido para camelCase conforme API
   stockQty: number;

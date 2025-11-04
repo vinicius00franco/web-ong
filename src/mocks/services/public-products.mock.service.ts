@@ -31,6 +31,7 @@ const convertJsonToProduct = (jsonData: ProductJsonData): Product => ({
   name: jsonData.name,
   description: jsonData.description,
   price: jsonData.price,
+  category: jsonData.category,
   imageUrl: jsonData.image_url,
   stockQty: jsonData.stock_qty,
   weightGrams: jsonData.weight_grams,

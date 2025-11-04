@@ -30,6 +30,7 @@ class PublicSearchService {
       name: item.name,
       description: item.description ?? '',
       price: Number.isFinite(priceNumber) ? priceNumber : 0,
+      category: item.category ?? undefined,
       categoryId: item.categoryId ?? item.category_id ?? 0,
       imageUrl: item.imageUrl ?? item.image_url ?? '',
       stockQty: item.stockQty ?? item.stock_qty ?? 0,

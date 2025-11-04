@@ -161,7 +161,7 @@ const Home: React.FC = () => {
                           <img src={p.imageUrl} className="card-img-top" alt={p.name} />
                           <div className="card-body d-flex flex-column">
                             <h5 className="card-title">{p.name}</h5>
-                          <p className="card-text small text-muted mb-1">Categoria: {p.categoryId}</p>
+                          <p className="card-text small text-muted mb-1">Categoria: {p.category ?? p.categoryId}</p>
                             <p className="card-text">{p.description}</p>
                             <div className="mt-auto fw-bold">R$ {p.price.toFixed(2).replace('.', ',')}</div>
                           </div>
