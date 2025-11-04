@@ -72,11 +72,18 @@ class PublicSearchService {
       }
       if ((data as any)?.success && (data as any)?.data) {
         const d = (data as any).data
-        const items = Array.isArray(d) ? d : (Array.isArray(d.items) ? d.items : [])
+        const items = Array.isArray(d)
+          ? d
+          : (Array.isArray(d.data)
+            ? d.data
+            : (Array.isArray(d.items)
+              ? d.items
+              : (Array.isArray(d.products) ? d.products : [])))
         return {
           products: items,
           interpretation: d.interpretation,
-          fallbackApplied: !!d.fallbackApplied,
+          // backend may use snake_case or camelCase
+          fallbackApplied: !!(d.fallback_applied ?? d.fallbackApplied ?? false),
         }
       }
       if (Array.isArray((data as any)?.products)) {
@@ -91,7 +98,9 @@ class PublicSearchService {
 
     const normalized = {
       products: (payload.products as any[]).map((p) => this.normalizeProduct(p)),
-      interpretation: payload.interpretation,
+      interpretation: typeof payload.interpretation === 'string'
+        ? { raw: payload.interpretation }
+        : payload.interpretation,
       fallbackApplied: payload.fallbackApplied,
     }
 

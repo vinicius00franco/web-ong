@@ -17,6 +17,8 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [interpretationText, setInterpretationText] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [limit] = useState<number>(12);
 
   const handleLogin = () => {
     navigate(ROUTES.LOGIN);
@@ -34,7 +36,7 @@ const Home: React.FC = () => {
       setError(null);
       setInterpretationText(null);
       try {
-        const res = await publicProductsService.getProducts();
+        const res = await publicProductsService.getProducts({ page, limit });
         if (active) setProductsRes(res);
       } catch (e) {
         if (active) setError(e instanceof Error ? e.message : 'Erro ao carregar produtos');
@@ -45,21 +47,56 @@ const Home: React.FC = () => {
     return () => {
       active = false;
     };
-  }, []);
+  }, [page, limit]);
 
   const onSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
+      const trimmed = query.trim();
+
+      // If query is empty, reload the public catalog (page/limit)
+      if (!trimmed) {
+        setPage(1);
+        const catalog = await publicProductsService.getProducts({ page: 1, limit });
+        setProductsRes(catalog);
+        setInterpretationText(null);
+        return;
+      }
+
       const res = await publicSearchService.search(query);
-      setProductsRes({
-        products: res.products,
-        total: res.products.length,
-        page: 1,
-        limit: res.products.length || 12,
-        totalPages: 1,
-      });
+      // Reset to first page for search results
+      setPage(1);
+      if (!res.products.length) {
+        // Fallback: buscar catálogo e filtrar por texto localmente
+        const catalog = await publicProductsService.getProducts({ page: 1, limit: 100 });
+        const norm = (s: string) => s
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+        const qn = norm(trimmed);
+        const filtered = catalog.products.filter(p => {
+          const name = norm(p.name || '');
+          const desc = norm(p.description || '');
+          return name.includes(qn) || desc.includes(qn);
+        });
+        setProductsRes({
+          products: filtered,
+          total: filtered.length,
+          page: 1,
+          limit,
+          totalPages: Math.max(1, Math.ceil(filtered.length / limit)),
+        });
+      } else {
+        setProductsRes({
+          products: res.products,
+          total: res.products.length,
+          page: 1,
+          limit: limit,
+          totalPages: Math.max(1, Math.ceil(res.products.length / limit)),
+        });
+      }
       if (res.interpretation) {
         const parts: string[] = [];
         if (res.interpretation.category) parts.push(`Categoria=${res.interpretation.category}`);
@@ -172,6 +209,28 @@ const Home: React.FC = () => {
                     !loading && <div className="col-12 text-center text-muted">Nenhum produto encontrado.</div>
                   )}
                 </div>
+                {/* Paginação simples */}
+                {productsRes && productsRes.total > limit && (
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div> {productsRes.page} / {productsRes.totalPages} — {productsRes.total} itens</div>
+                    <div>
+                      <button
+                        className="btn btn-sm btn-outline-primary me-2"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={productsRes.page <= 1}
+                      >
+                        Anterior
+                      </button>
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={() => setPage((p) => Math.min(productsRes.totalPages, p + 1))}
+                        disabled={productsRes.page >= productsRes.totalPages}
+                      >
+                        Próxima
+                      </button>
+                    </div>
+                  </div>
+                )}
               </Card.Body>
             </Card>
           </div>
