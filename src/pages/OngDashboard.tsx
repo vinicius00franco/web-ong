@@ -4,11 +4,11 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { useAuth } from '../contexts/AuthContext';
 import { useDashboardWidgets } from '../hooks/useDashboardWidgets';
 import {
-  useRecentProducts,
   useDonationsChart,
-  useRecentActivities,
   useVolunteersChart,
   useProjectsStatus,
+  useDashboardStats,
+  useDashboardActivities,
 } from '../hooks/useDashboardData';
 import DashboardWidget from '../components/DashboardWidget';
 import DashboardStats from '../components/DashboardStats';
@@ -28,11 +28,11 @@ const OngDashboard: React.FC = () => {
   } = useDashboardWidgets();
 
   // Hooks para dados do dashboard
-  const { products: recentProducts } = useRecentProducts();
   const { data: donationsChartData } = useDonationsChart();
-  const { activities: recentActivities } = useRecentActivities();
   const { data: volunteersChartData } = useVolunteersChart();
   const { projects: projectsStatus } = useProjectsStatus();
+  const { stats: dashboardStats } = useDashboardStats();
+  const { activities: dashboardActivities } = useDashboardActivities();
 
   const [showSettings, setShowSettings] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -53,36 +53,25 @@ const OngDashboard: React.FC = () => {
       case 'recent-products':
         return (
           <div className="list-group list-group-flush">
-            {recentProducts.map(product => {
-              const statusConfig = {
-                available: { color: 'success', label: 'Disponível' },
-                'low-stock': { color: 'warning', label: 'Estoque Baixo' },
-                reserved: { color: 'info', label: 'Reservado' },
-              }[product.status] || { color: 'secondary', label: 'Desconhecido' };
-
-              return (
-                <div key={product.id} className="list-group-item border-0 px-0">
-                  <div className="d-flex align-items-center">
-                    <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="rounded me-3"
-                      style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                    />
-                    <div className="flex-grow-1">
-                      <h6 className="mb-0">{product.name}</h6>
-                      <small className="text-muted">{product.category}</small>
-                    </div>
-                    <div className="text-end">
-                      <span className={`badge bg-${statusConfig.color} mb-1`}>
-                        {statusConfig.label}
-                      </span>
-                      <div className="small text-muted">Qtd: {product.quantity}</div>
-                    </div>
+            {dashboardStats?.recentProducts.map(product => (
+              <div key={product.id} className="list-group-item border-0 px-0">
+                <div className="d-flex align-items-center">
+                  <div className="me-3" style={{ width: '50px', height: '50px', backgroundColor: '#f8f9fa', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: '1.5rem' }}>📦</span>
+                  </div>
+                  <div className="flex-grow-1">
+                    <h6 className="mb-0">{product.name}</h6>
+                    <small className="text-muted">{product.category} • {product.organization}</small>
+                  </div>
+                  <div className="text-end">
+                    <div className="fw-bold">R$ {product.price.toFixed(2)}</div>
+                    <small className="text-muted">
+                      {new Date(product.createdAt).toLocaleDateString('pt-BR')}
+                    </small>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
             <div className="text-center pt-3">
               <Link to="/ong/products" className="btn btn-sm btn-outline-primary">
                 Ver Todos os Produtos
@@ -120,7 +109,7 @@ const OngDashboard: React.FC = () => {
       case 'activities':
         return (
           <div className="list-group list-group-flush" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {recentActivities.map(activity => {
+            {dashboardActivities.map(activity => {
               const timeAgo = (timestamp: string) => {
                 const now = new Date();
                 const activityDate = new Date(timestamp);
@@ -134,11 +123,20 @@ const OngDashboard: React.FC = () => {
                 return `${diffDays}d atrás`;
               };
 
+              const getIcon = (type: string) => {
+                switch (type) {
+                  case 'product': return '📦';
+                  case 'search': return '🔍';
+                  case 'donation': return '💰';
+                  default: return '📝';
+                }
+              };
+
               return (
                 <div key={activity.id} className="list-group-item border-0 px-0 py-2">
                   <div className="d-flex align-items-start">
                     <div className="me-3" style={{ fontSize: '1.5rem' }}>
-                      {activity.icon}
+                      {getIcon(activity.type)}
                     </div>
                     <div className="flex-grow-1">
                       <p className="mb-0 small">

@@ -2,23 +2,60 @@
  * Tipos e interfaces para o Dashboard
  */
 
+// Tipos para /dashboard/stats
 export interface DashboardStats {
-  products: number;
-  donations: number;
-  volunteers: number;
-  projects: number;
+  totalProducts: number;
+  totalOrganizations: number;
+  totalCategories: number;
+  totalInventoryValue: number;
+  averageProductPrice: number;
+  totalStockQuantity: number;
+  productsByCategory: ProductByCategory[];
+  productsByOrganization: ProductByOrganization[];
+  recentProducts: RecentProduct[];
+  searchMetrics: SearchMetrics;
+}
+
+export interface ProductByCategory {
+  category: string;
+  count: number;
+  percentage: number;
+}
+
+export interface ProductByOrganization {
+  organization: string;
+  count: number;
+  stock: number;
 }
 
 export interface RecentProduct {
-  id: string;
+  id: number;
   name: string;
+  price: number;
   category: string;
-  status: 'available' | 'low-stock' | 'reserved';
-  quantity: number;
-  image: string;
-  addedAt: string;
+  organization: string;
+  createdAt: string;
 }
 
+export interface SearchMetrics {
+  totalSearches: number;
+  aiUsageRate: number;
+  fallbackRate: number;
+  averageLatency: number;
+}
+
+// Tipos para /dashboard/activities
+export interface DashboardActivity {
+  id: string;
+  user: string;
+  action: string;
+  target: string;
+  timestamp: string;
+  icon: string;
+  type: string;
+}
+
+// Tipos legados (para compatibilidade)
 export interface DonationChartData {
   label: string;
   value: number;
@@ -28,16 +65,6 @@ export interface TopProductData {
   label: string;
   value: number;
   color: string;
-}
-
-export interface RecentActivity {
-  id: string;
-  type: 'donation' | 'product' | 'volunteer';
-  user: string;
-  action: string;
-  target: string;
-  timestamp: string;
-  icon: string;
 }
 
 export interface VolunteerChartData {
@@ -55,12 +82,30 @@ export interface ProjectStatus {
   deadline: string;
 }
 
+// Tipos legados (para compatibilidade)
+export interface LegacyDashboardStats {
+  products: number;
+  donations: number;
+  volunteers: number;
+  projects: number;
+}
+
+export interface LegacyRecentProduct {
+  id: string;
+  name: string;
+  category: string;
+  status: 'available' | 'low-stock' | 'reserved';
+  quantity: number;
+  image: string;
+  addedAt: string;
+}
+
 export interface DashboardData {
-  stats: DashboardStats;
-  recentProducts: RecentProduct[];
+  stats: LegacyDashboardStats | DashboardStats;
+  recentProducts: LegacyRecentProduct[] | RecentProduct[];
   donationsChart: DonationChartData[];
   topProducts: TopProductData[];
-  recentActivities: RecentActivity[];
+  recentActivities: DashboardActivity[];
   volunteersChart: VolunteerChartData[];
   projectsStatus: ProjectStatus[];
 }

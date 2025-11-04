@@ -1,6 +1,6 @@
 import axios from 'axios';
 import './axios-logger';
-import type { DashboardData } from '../types/dashboard';
+import type { DashboardStats, DashboardActivity } from '../types/dashboard';
 import { configManager } from '../config/app.config';
 import { dashboardMockService } from '../mocks';
 
@@ -12,7 +12,26 @@ class DashboardService {
     return configManager.getConfig().useMockData;
   }
 
-  async getDashboardData(): Promise<DashboardData> {
+  async getDashboardStats(): Promise<DashboardStats> {
+    if (this.useMock) {
+      return dashboardMockService.getDashboardStats();
+    }
+
+    const { data } = await axios.get('/api/dashboard/stats');
+    return data.data;
+  }
+
+  async getDashboardActivities(): Promise<DashboardActivity[]> {
+    if (this.useMock) {
+      return dashboardMockService.getDashboardActivities();
+    }
+
+    const { data } = await axios.get('/api/dashboard/activities');
+    return data.data;
+  }
+
+  // Método legado para compatibilidade
+  async getDashboardData() {
     if (this.useMock) {
       return dashboardMockService.getDashboardData();
     }

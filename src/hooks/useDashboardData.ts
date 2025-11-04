@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { dashboardService } from '../services/dashboard.service';
-import type { RecentProduct, DonationChartData, RecentActivity, VolunteerChartData, ProjectStatus } from '../types/dashboard';
+import type { RecentProduct, DonationChartData, DashboardActivity, VolunteerChartData, ProjectStatus, DashboardStats } from '../types/dashboard';
 
 /**
  * Hook customizado para buscar produtos recentes
@@ -64,7 +64,7 @@ export const useDonationsChart = () => {
  * Hook customizado para buscar atividades recentes
  */
 export const useRecentActivities = () => {
-  const [activities, setActivities] = useState<RecentActivity[]>([]);
+  const [activities, setActivities] = useState<DashboardActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -145,4 +145,62 @@ export const useProjectsStatus = () => {
   }, []);
 
   return { projects, loading, error };
+};
+
+/**
+ * Hook customizado para buscar estatísticas do dashboard
+ */
+export const useDashboardStats = () => {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const dashboardStats = await dashboardService.getDashboardStats();
+        setStats(dashboardStats);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar estatísticas do dashboard');
+        console.error('Erro ao buscar estatísticas do dashboard:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  return { stats, loading, error };
+};
+
+/**
+ * Hook customizado para buscar atividades do dashboard
+ */
+export const useDashboardActivities = () => {
+  const [activities, setActivities] = useState<DashboardActivity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const dashboardActivities = await dashboardService.getDashboardActivities();
+        setActivities(dashboardActivities);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar atividades do dashboard');
+        console.error('Erro ao buscar atividades do dashboard:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivities();
+  }, []);
+
+  return { activities, loading, error };
 };

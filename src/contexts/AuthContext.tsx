@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuthStore } from '../stores/authStore';
 
 interface User {
   id: string;
@@ -31,39 +31,12 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  // Using custom hook for better localStorage management
-  const [token, setToken, removeToken] = useLocalStorage<string | null>('token', null);
-  const [user, setUser, removeUser] = useLocalStorage<User | null>('user', null);
-
-  const login = (newToken: string, newUser: User) => {
-    console.log('🔐 AuthContext.login chamado:', { 
-      token: newToken?.substring(0, 20) + '...', 
-      user: newUser 
-    });
-    setToken(newToken);
-    setUser(newUser);
-    
-    // Verificar se foi salvo no localStorage
-    setTimeout(() => {
-      const savedToken = localStorage.getItem('token');
-      const savedUser = localStorage.getItem('user');
-      console.log('✅ Verificação pós-login:', {
-        tokenSalvo: savedToken ? 'SIM' : 'NÃO',
-        userSalvo: savedUser ? 'SIM' : 'NÃO',
-        tokenValue: savedToken?.substring(0, 30) + '...'
-      });
-    }, 100);
-  };
-
-  const logout = () => {
-    console.log('🚪 AuthContext.logout chamado');
-    removeToken();
-    removeUser();
-  };
+  // Use Zustand store for state management
+  const { token, user, login, logout } = useAuthStore();
 
   // Log do estado atual
   React.useEffect(() => {
-    console.log('🔄 Estado AuthContext atualizado:', {
+    console.log('🔄 AuthContext estado atualizado:', {
       isAuthenticated: !!token,
       hasUser: !!user,
       token: token?.substring(0, 20) + '...'

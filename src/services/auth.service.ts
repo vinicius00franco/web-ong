@@ -130,7 +130,16 @@ class AuthService {
       return mockAuthService.logout();
     }
 
-    await axios.post('/api/auth/logout');
+    try {
+      await axios.post('/api/auth/logout');
+    } catch (error) {
+      // Even if logout request fails, we should clear local state
+      console.warn('Logout request failed, but clearing local state anyway');
+    } finally {
+      // Always clear the Zustand store state
+      const { useAuthStore } = await import('../stores/authStore');
+      useAuthStore.getState().logout();
+    }
   }
 }
 

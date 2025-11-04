@@ -23,9 +23,20 @@ export const ProductsList = () => {
       try {
         setLoading(true);
         const response = await productsService.getProducts();
-        setProducts(response.products);
+        console.log('📦 Resposta da API de produtos:', response);
+        
+        // Handle both response formats: { products: [...] } or direct array
+        if (Array.isArray(response)) {
+          setProducts(response);
+        } else if (response && typeof response === 'object' && 'products' in response) {
+          setProducts(response.products || []);
+        } else {
+          console.error('❌ Formato de resposta inesperado:', response);
+          setProducts([]);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        console.error('❌ Erro ao carregar produtos:', err);
       } finally {
         setLoading(false);
       }
@@ -53,7 +64,15 @@ export const ProductsList = () => {
         await productsService.deleteProduct(productToDelete);
         // Reload products after deletion
         const response = await productsService.getProducts();
-        setProducts(response.products);
+        
+        // Handle both response formats
+        if (Array.isArray(response)) {
+          setProducts(response);
+        } else if (response && typeof response === 'object' && 'products' in response) {
+          setProducts(response.products || []);
+        } else {
+          setProducts([]);
+        }
       } catch (err) {
         alert('Erro ao deletar produto: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       } finally {

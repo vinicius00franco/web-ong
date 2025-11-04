@@ -42,10 +42,12 @@ const DashboardStats = memo(() => {
 
   // Dados mockados como fallback se não conseguir carregar
   const fallbackStats = {
-    products: 24,
-    donations: 12450,
-    volunteers: 48,
-    projects: 7,
+    totalProducts: 25,
+    totalOrganizations: 1,
+    totalCategories: 5,
+    totalInventoryValue: 15750.50,
+    averageProductPrice: 35.75,
+    totalStockQuantity: 450,
   };
 
   const currentStats = dashboardStats || fallbackStats;
@@ -54,32 +56,32 @@ const DashboardStats = memo(() => {
     {
       id: 'products',
       title: 'Produtos',
-      value: currentStats.products,
+      value: currentStats.totalProducts,
       icon: Icons.Products,
       color: 'primary' as const,
       trend: { value: 12, isPositive: true, label: 'vs. mês anterior' },
       onClick: () => navigate(ROUTES.ONG.PRODUCTS),
     },
     {
-      id: 'donations',
-      title: 'Doações',
-      value: `R$ ${currentStats.donations.toLocaleString('pt-BR')}`,
+      id: 'inventory',
+      title: 'Valor do Estoque',
+      value: `R$ ${currentStats.totalInventoryValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       icon: Icons.Donations,
       color: 'success' as const,
       trend: { value: 8.5, isPositive: true, label: 'este mês' },
     },
     {
-      id: 'volunteers',
-      title: 'Voluntários',
-      value: currentStats.volunteers,
+      id: 'categories',
+      title: 'Categorias',
+      value: currentStats.totalCategories,
       icon: Icons.Volunteers,
       color: 'warning' as const,
       trend: { value: 3, isPositive: false, label: 'vs. semana anterior' },
     },
     {
-      id: 'projects',
-      title: 'Projetos Ativos',
-      value: currentStats.projects,
+      id: 'stock',
+      title: 'Estoque Total',
+      value: currentStats.totalStockQuantity,
       icon: Icons.Projects,
       color: 'info' as const,
       trend: { value: 2, isPositive: true, label: 'novos este mês' },

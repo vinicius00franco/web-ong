@@ -4,32 +4,196 @@ import type {
   RecentProduct,
   DonationChartData,
   TopProductData,
-  RecentActivity,
+  DashboardActivity,
   VolunteerChartData,
   ProjectStatus,
+  ProductByCategory,
+  ProductByOrganization,
+  SearchMetrics,
 } from '../../types/dashboard';
+
+// Tipo legado para compatibilidade
+interface LegacyDashboardStats {
+  products: number;
+  donations: number;
+  volunteers: number;
+  projects: number;
+}
+
+interface LegacyRecentProduct {
+  id: string;
+  name: string;
+  category: string;
+  status: 'available' | 'low-stock' | 'reserved';
+  quantity: number;
+  image: string;
+  addedAt: string;
+}
 
 /**
  * Service mockado para dados do Dashboard
  * Simula respostas da API com dados fake
  */
 class DashboardMockService {
-  async getDashboardData(): Promise<DashboardData> {
+  async getDashboardStats(): Promise<DashboardStats> {
     // Simula delay de rede
     await new Promise(resolve => setTimeout(resolve, 300));
 
     return {
-      stats: this.getStats(),
+      totalProducts: 25,
+      totalOrganizations: 1,
+      totalCategories: 5,
+      totalInventoryValue: 15750.50,
+      averageProductPrice: 35.75,
+      totalStockQuantity: 450,
+      productsByCategory: this.getProductsByCategory(),
+      productsByOrganization: this.getProductsByOrganization(),
       recentProducts: this.getRecentProducts(),
+      searchMetrics: this.getSearchMetrics(),
+    };
+  }
+
+  async getDashboardActivities(): Promise<DashboardActivity[]> {
+    // Simula delay de rede
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    return [
+      {
+        id: "product_123",
+        user: "Sistema",
+        action: "adicionou",
+        target: "Brigadeiro Gourmet",
+        timestamp: "2025-01-11T10:30:00.000Z",
+        icon: "package",
+        type: "product"
+      },
+      {
+        id: "search_456",
+        user: "Usuário",
+        action: "pesquisou",
+        target: "doces até 20 reais",
+        timestamp: "2025-01-11T09:15:00.000Z",
+        icon: "search",
+        type: "search"
+      },
+      {
+        id: "product_789",
+        user: "João Silva",
+        action: "atualizou",
+        target: "Cesta Básica",
+        timestamp: "2025-01-11T08:45:00.000Z",
+        icon: "edit",
+        type: "product"
+      },
+      {
+        id: "donation_101",
+        user: "Maria Santos",
+        action: "doou",
+        target: "R$ 150,00",
+        timestamp: "2025-01-11T07:30:00.000Z",
+        icon: "heart",
+        type: "donation"
+      }
+    ];
+  }
+
+  private getProductsByCategory(): ProductByCategory[] {
+    return [
+      {
+        category: "Doces",
+        count: 10,
+        percentage: 40.0
+      },
+      {
+        category: "Alimentos",
+        count: 8,
+        percentage: 32.0
+      },
+      {
+        category: "Higiene",
+        count: 4,
+        percentage: 16.0
+      },
+      {
+        category: "Roupas",
+        count: 2,
+        percentage: 8.0
+      },
+      {
+        category: "Outros",
+        count: 1,
+        percentage: 4.0
+      }
+    ];
+  }
+
+  private getProductsByOrganization(): ProductByOrganization[] {
+    return [
+      {
+        organization: "ONG Exemplo",
+        count: 25,
+        stock: 450
+      }
+    ];
+  }
+
+  private getRecentProducts(): RecentProduct[] {
+    return [
+      {
+        id: 123,
+        name: "Brigadeiro Gourmet",
+        price: 15.99,
+        category: "Doces",
+        organization: "ONG Exemplo",
+        createdAt: "2025-01-11T10:30:00.000Z"
+      },
+      {
+        id: 124,
+        name: "Cesta Básica Completa",
+        price: 45.50,
+        category: "Alimentos",
+        organization: "ONG Exemplo",
+        createdAt: "2025-01-10T14:20:00.000Z"
+      },
+      {
+        id: 125,
+        name: "Kit Higiene Pessoal",
+        price: 28.75,
+        category: "Higiene",
+        organization: "ONG Exemplo",
+        createdAt: "2025-01-09T09:15:00.000Z"
+      }
+    ];
+  }
+
+  private getSearchMetrics(): SearchMetrics {
+    return {
+      totalSearches: 150,
+      aiUsageRate: 85.5,
+      fallbackRate: 12.3,
+      averageLatency: 245.8
+    };
+  }
+
+      // Métodos legados para compatibilidade
+  async getDashboardData(): Promise<DashboardData> {
+    // Simula delay de rede
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const activities = await this.getDashboardActivities();
+
+    return {
+      stats: this.getLegacyStats(),
+      recentProducts: this.getLegacyRecentProducts(),
       donationsChart: this.getDonationsChart(),
       topProducts: this.getTopProducts(),
-      recentActivities: this.getRecentActivities(),
+      recentActivities: activities,
       volunteersChart: this.getVolunteersChart(),
       projectsStatus: this.getProjectsStatus(),
     };
   }
 
-  private getStats(): DashboardStats {
+  private getLegacyStats(): LegacyDashboardStats {
     return {
       products: 24,
       donations: 12450, // em centavos ou reais?
@@ -38,13 +202,13 @@ class DashboardMockService {
     };
   }
 
-  private getRecentProducts(): RecentProduct[] {
+  private getLegacyRecentProducts(): LegacyRecentProduct[] {
     return [
       {
         id: '1',
         name: 'Cesta Básica Completa',
         category: 'Alimentos',
-        status: 'available',
+        status: 'available' as const,
         quantity: 45,
         image: 'https://via.placeholder.com/60x60/0d6efd/ffffff?text=CB',
         addedAt: new Date(2025, 9, 28).toISOString(),
@@ -53,7 +217,7 @@ class DashboardMockService {
         id: '2',
         name: 'Agasalho Infantil',
         category: 'Roupas',
-        status: 'low-stock',
+        status: 'low-stock' as const,
         quantity: 8,
         image: 'https://via.placeholder.com/60x60/198754/ffffff?text=AI',
         addedAt: new Date(2025, 9, 27).toISOString(),
@@ -62,28 +226,10 @@ class DashboardMockService {
         id: '3',
         name: 'Kit Higiene Pessoal',
         category: 'Higiene',
-        status: 'available',
+        status: 'available' as const,
         quantity: 32,
         image: 'https://via.placeholder.com/60x60/ffc107/000000?text=KH',
         addedAt: new Date(2025, 9, 26).toISOString(),
-      },
-      {
-        id: '4',
-        name: 'Livros Didáticos',
-        category: 'Educação',
-        status: 'reserved',
-        quantity: 15,
-        image: 'https://via.placeholder.com/60x60/dc3545/ffffff?text=LD',
-        addedAt: new Date(2025, 9, 25).toISOString(),
-      },
-      {
-        id: '5',
-        name: 'Brinquedos Educativos',
-        category: 'Recreação',
-        status: 'available',
-        quantity: 21,
-        image: 'https://via.placeholder.com/60x60/6f42c1/ffffff?text=BE',
-        addedAt: new Date(2025, 9, 24).toISOString(),
       },
     ];
   }
@@ -110,65 +256,6 @@ class DashboardMockService {
       { label: 'Higiene', value: 76, color: '#ffc107' },
       { label: 'Educação', value: 54, color: '#dc3545' },
       { label: 'Outros', value: 32, color: '#6c757d' },
-    ];
-  }
-
-  private getRecentActivities(): RecentActivity[] {
-    return [
-      {
-        id: '1',
-        type: 'donation',
-        user: 'Maria Silva',
-        action: 'realizou uma doação',
-        target: 'R$ 500,00',
-        timestamp: new Date(2025, 9, 30, 14, 30).toISOString(),
-        icon: '💰',
-      },
-      {
-        id: '2',
-        type: 'product',
-        user: 'João Santos',
-        action: 'adicionou produto',
-        target: 'Cesta Básica Completa',
-        timestamp: new Date(2025, 9, 30, 12, 15).toISOString(),
-        icon: '📦',
-      },
-      {
-        id: '3',
-        type: 'volunteer',
-        user: 'Ana Costa',
-        action: 'se cadastrou como voluntária',
-        target: '',
-        timestamp: new Date(2025, 9, 30, 10, 45).toISOString(),
-        icon: '👥',
-      },
-      {
-        id: '4',
-        type: 'product',
-        user: 'Pedro Oliveira',
-        action: 'reservou produto',
-        target: 'Livros Didáticos (5 unidades)',
-        timestamp: new Date(2025, 9, 29, 16, 20).toISOString(),
-        icon: '🔖',
-      },
-      {
-        id: '5',
-        type: 'donation',
-        user: 'Carla Mendes',
-        action: 'realizou uma doação',
-        target: 'R$ 250,00',
-        timestamp: new Date(2025, 9, 29, 14, 10).toISOString(),
-        icon: '💰',
-      },
-      {
-        id: '6',
-        type: 'product',
-        user: 'Admin',
-        action: 'atualizou estoque',
-        target: 'Kit Higiene Pessoal',
-        timestamp: new Date(2025, 9, 29, 9, 30).toISOString(),
-        icon: '📝',
-      },
     ];
   }
 
