@@ -16,7 +16,6 @@ describe('LLM API Integration - Smart Search Tests', () => {
     try {
       await axios.get('/health', { timeout: 2000 });
       apiAvailable = true;
-      console.log('✅ API is available for integration tests');
     } catch (error) {
       apiAvailable = false;
       console.warn('⚠️ API is not available, integration tests will be skipped');
@@ -26,7 +25,6 @@ describe('LLM API Integration - Smart Search Tests', () => {
   describe('🔍 Smart Search Functionality', () => {
     it('should search for cleaning products under 50 reais', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
       const searchQuery = 'produtos de limpeza até 50 reais';
@@ -46,17 +44,10 @@ describe('LLM API Integration - Smart Search Tests', () => {
       expect(searchData).toHaveProperty('data');
       expect(Array.isArray(searchData.data)).toBe(true);
 
-      console.log('✅ Smart search working');
-      console.log('Query:', searchQuery);
-      console.log('Interpretation:', searchData.interpretation);
-      console.log('AI Used:', searchData.ai_used);
-      console.log('Fallback Applied:', searchData.fallback_applied);
-      console.log('Results found:', searchData.data.length);
     });
 
     it('should search for electronics products', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -73,14 +64,10 @@ describe('LLM API Integration - Smart Search Tests', () => {
       expect(searchData).toHaveProperty('data');
       expect(Array.isArray(searchData.data)).toBe(true);
 
-      console.log('✅ Electronics search working');
-      console.log('Query:', searchQuery);
-      console.log('Results found:', searchData.data.length);
     });
 
     it('should handle empty search query', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -97,13 +84,10 @@ describe('LLM API Integration - Smart Search Tests', () => {
       expect(searchData).toHaveProperty('data');
       expect(Array.isArray(searchData.data)).toBe(true);
 
-      console.log('✅ Empty search handled');
-      console.log('Results found:', searchData.data.length);
     });
 
     it('should handle search with special characters', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -120,14 +104,10 @@ describe('LLM API Integration - Smart Search Tests', () => {
       expect(searchData).toHaveProperty('data');
       expect(Array.isArray(searchData.data)).toBe(true);
 
-      console.log('✅ Special characters search handled');
-      console.log('Query:', searchQuery);
-      console.log('Results found:', searchData.data.length);
     });
 
     it('should return products with correct structure', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -151,13 +131,6 @@ describe('LLM API Integration - Smart Search Tests', () => {
         expect(product).toHaveProperty('category');
         expect(product).toHaveProperty('description');
 
-        console.log('✅ Product structure validated');
-        console.log('Sample product:', {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          category: product.category
-        });
       }
     });
   });
@@ -165,7 +138,6 @@ describe('LLM API Integration - Smart Search Tests', () => {
   describe('⚡ Performance Tests', () => {
     it('should respond within reasonable time', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -182,14 +154,12 @@ describe('LLM API Integration - Smart Search Tests', () => {
       expect(response.status).toBe(200);
       expect(responseTime).toBeLessThan(5000); // Should respond within 5 seconds
 
-      console.log(`✅ Response time: ${responseTime}ms`);
     });
   });
 
   describe('🔄 Fallback Behavior', () => {
     it('should apply fallback when AI is not available', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
       // This test assumes the AI might not be available
@@ -208,8 +178,6 @@ describe('LLM API Integration - Smart Search Tests', () => {
       expect(searchData).toHaveProperty('data');
       expect(Array.isArray(searchData.data)).toBe(true);
 
-      console.log('✅ Fallback behavior working');
-      console.log('Fallback applied:', searchData.fallbackApplied);
     });
   });
 });

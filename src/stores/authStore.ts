@@ -27,15 +27,10 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
 
       login: (token: string, user: User) => {
-        console.log('🔐 AuthStore.login chamado:', {
-          token: token?.substring(0, 20) + '...',
-          user
-        });
         set({ token, user, isAuthenticated: true });
       },
 
       logout: () => {
-        console.log('🚪 AuthStore.logout chamado');
         set({ token: null, user: null, isAuthenticated: false });
       },
 

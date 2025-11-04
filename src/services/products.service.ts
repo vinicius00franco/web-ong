@@ -16,7 +16,6 @@ class ProductsService {
    * Normaliza a resposta da API para o formato esperado
    */
   private normalizeProductsResponse(response: any): ProductsResponse {
-    console.log('🔄 Normalizando resposta da API:', response);
 
     // Se for um array direto, converter para ProductsResponse
     if (Array.isArray(response)) {
@@ -85,7 +84,6 @@ class ProductsService {
 
     try {
       const { data } = await axios.get(`/api/products/${id}`);
-      console.log('📦 Resposta da API para produto individual:', data);
       
       // Normalizar se necessário
       if (data?.data && typeof data.data === 'object') {
@@ -105,7 +103,6 @@ class ProductsService {
 
     try {
       const { data } = await axios.post('/api/products', productData);
-      console.log('✅ Produto criado:', data);
       
       // Normalizar se necessário
       if (data?.data && typeof data.data === 'object') {
@@ -126,7 +123,6 @@ class ProductsService {
     try {
       const { id, ...updateData } = productData;
       const { data } = await axios.put(`/api/products/${id}`, updateData);
-      console.log('✅ Produto atualizado:', data);
       
       // Normalizar se necessário
       if (data?.data && typeof data.data === 'object') {
@@ -146,7 +142,6 @@ class ProductsService {
 
     try {
       await axios.delete(`/api/products/${id}`);
-      console.log(`✅ Produto ${id} deletado com sucesso`);
     } catch (error) {
       console.error(`❌ Erro ao deletar produto ${id}:`, error);
       throw error;

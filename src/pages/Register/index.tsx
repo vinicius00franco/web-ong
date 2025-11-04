@@ -19,16 +19,10 @@ const Register: React.FC = () => {
     setError('');
     setLoading(true);
 
-    console.log('📝 Register: Formulário submetido', { name, email });
-
     try {
-      console.log('🔄 Register: Chamando authService.register...');
       await authService.register({ name, email, password });
 
-      console.log('✅ Register: Registro realizado com sucesso');
-
       // Redirecionar para login após registro bem-sucedido
-      console.log('🧭 Register: Redirecionando para login...');
       navigate(ROUTES.LOGIN);
     } catch (err) {
       console.error('❌ Register: Erro durante registro:', err);

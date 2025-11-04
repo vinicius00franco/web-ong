@@ -27,7 +27,6 @@ describe('API Integration Tests', () => {
     try {
       await axios.get('/api/categories', { timeout: 2000 });
       apiAvailable = true;
-      console.log('✅ API is available for integration tests');
 
       // Tentar fazer login para verificar se as credenciais funcionam
       try {
@@ -35,7 +34,6 @@ describe('API Integration Tests', () => {
         accessToken = response.data.data.access_token;
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         apiAuthenticated = true;
-        console.log('✅ API authentication successful');
       } catch (authError) {
         apiAuthenticated = false;
         console.warn('⚠️ API authentication failed, skipping authenticated tests');
@@ -49,7 +47,6 @@ describe('API Integration Tests', () => {
   describe('🔐 Authentication Routes', () => {
     it('POST /auth/login - should login successfully', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -62,7 +59,6 @@ describe('API Integration Tests', () => {
         expect(typeof response.data.data.access_token).toBe('string');
 
         accessToken = response.data.data.access_token;
-        console.log('✅ Login successful, token received');
 
         // Configurar token para próximas requisições
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
@@ -79,7 +75,6 @@ describe('API Integration Tests', () => {
   describe('📦 Products Routes (Require Bearer Token)', () => {
     it('POST /products - should create a new product', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -105,7 +100,6 @@ describe('API Integration Tests', () => {
         expect(response.data.data.price).toBe(productData.price.toString()); // API retorna como string
 
         testProductId = response.data.data.id.toString();
-        console.log('✅ Product created successfully:', testProductId);
       } catch (error: any) {
         console.error('❌ Product creation failed:', error.response?.data || error.message);
         throw error;
@@ -114,7 +108,6 @@ describe('API Integration Tests', () => {
 
     it('GET /products - should list products', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -133,7 +126,6 @@ describe('API Integration Tests', () => {
           expect(product).toHaveProperty('price');
         }
 
-        console.log(`✅ Products listed successfully: ${response.data.data.length} products`);
       } catch (error: any) {
         console.error('❌ Products listing failed:', error.response?.data || error.message);
         throw error;
@@ -142,7 +134,6 @@ describe('API Integration Tests', () => {
 
     it('GET /products/{id} - should get specific product', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -159,7 +150,6 @@ describe('API Integration Tests', () => {
         expect(response.data.data).toHaveProperty('name');
         expect(response.data.data.name).toBe('Produto de Teste');
 
-        console.log('✅ Specific product retrieved successfully');
       } catch (error: any) {
         console.error('❌ Specific product retrieval failed:', error.response?.data || error.message);
         throw error;
@@ -168,7 +158,6 @@ describe('API Integration Tests', () => {
 
     it('PUT /products/{id} - should update product', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -192,7 +181,6 @@ describe('API Integration Tests', () => {
         expect(response.data.data.price).toBe(updateData.price?.toString()); // API retorna como string
         expect(response.data.data.stockQty).toBe(updateData.stockQty);
 
-        console.log('✅ Product updated successfully');
       } catch (error: any) {
         console.error('❌ Product update failed:', error.response?.data || error.message);
         throw error;
@@ -201,7 +189,6 @@ describe('API Integration Tests', () => {
 
     it('DELETE /products/{id} - should delete product', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -213,7 +200,6 @@ describe('API Integration Tests', () => {
         expect(response.status).toBe(200);
         expect(response.data).toHaveProperty('success', true);
 
-        console.log('✅ Product deleted successfully');
       } catch (error: any) {
         console.error('❌ Product deletion failed:', error.response?.data || error.message);
         throw error;
@@ -222,7 +208,6 @@ describe('API Integration Tests', () => {
 
     it('GET /products - should return empty or different products after deletion', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -238,7 +223,6 @@ describe('API Integration Tests', () => {
         const deletedProduct = response.data.data.find((p: Product) => p.id.toString() === testProductId);
         expect(deletedProduct).toBeUndefined();
 
-        console.log(`✅ Products list verified after deletion: ${response.data.data.length} products`);
       } catch (error: any) {
         console.error('❌ Products listing after deletion failed:', error.response?.data || error.message);
         throw error;
@@ -249,7 +233,6 @@ describe('API Integration Tests', () => {
   describe('🚨 Error Handling Tests', () => {
     it('should handle unauthorized access without token', async () => {
       if (!apiAvailable) {
-        console.log('⏭️ Skipping test: API not available');
         return;
       }
 
@@ -263,7 +246,6 @@ describe('API Integration Tests', () => {
         expect(true).toBe(false); // Forçar falha
       } catch (error: any) {
         expect(error.response?.status).toBe(401);
-        console.log('✅ Unauthorized access properly blocked');
       } finally {
         // Restaurar token
         if (originalToken) {
@@ -274,7 +256,6 @@ describe('API Integration Tests', () => {
 
     it('should handle not found for invalid product ID', async () => {
       if (!apiAvailable || !apiAuthenticated) {
-        console.log('⏭️ Skipping test: API not available or not authenticated');
         return;
       }
 
@@ -284,7 +265,6 @@ describe('API Integration Tests', () => {
       } catch (error: any) {
         // API retorna 500 para IDs inválidos (erro interno), não 404
         expect([404, 500]).toContain(error.response?.status);
-        console.log('✅ Not found error handled correctly');
       }
     });
   });
@@ -295,7 +275,6 @@ describe('API Integration Tests', () => {
         // Tentar uma requisição simples para verificar se a API está rodando
         const response = await axios.get(LLM_API_URL, { timeout: 2000 });
 
-        console.log('✅ LLM API is accessible');
         expect(response.status).toBeGreaterThanOrEqual(200);
         expect(response.status).toBeLessThan(500);
       } catch (error: any) {
@@ -324,10 +303,6 @@ describe('API Integration Tests', () => {
         expect(searchData).toHaveProperty('data');
         expect(Array.isArray(searchData.data)).toBe(true);
 
-        console.log('✅ Public search with LLM integration working');
-        console.log('Interpretation:', searchData.interpretation);
-        console.log('AI Used:', searchData.ai_used);
-        console.log('Fallback Applied:', searchData.fallback_applied);
       } catch (error: any) {
         console.warn('⚠️ Public search endpoint not accessible:', error.response?.data || error.message);
         // Não falhar o teste se a busca não estiver disponível

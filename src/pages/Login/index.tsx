@@ -29,22 +29,11 @@ const Login: React.FC = () => {
     setError('');
     setLoading(true);
 
-    console.log('📝 Login: Formulário submetido', { email });
-
     try {
-      console.log('🔄 Login: Chamando authService.login...');
       const { token, user } = await authService.login({ email, password });
-      
-      console.log('✅ Login: Resposta recebida do serviço:', {
-        hasToken: !!token,
-        tokenPreview: token?.substring(0, 30) + '...',
-        user
-      });
-      
-      console.log('🔐 Login: Chamando context.login...');
+
       login(token, user);
-      
-      console.log('🧭 Login: Navegando para /ong...');
+
       navigate(ROUTES.ONG.DASHBOARD);
     } catch (err) {
       console.error('❌ Login: Erro durante autenticação:', err);

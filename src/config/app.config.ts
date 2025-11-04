@@ -49,27 +49,22 @@ class ConfigManager {
     this.config.useMockData = useMock;
     // Salva preferência no localStorage (sobrescreve .env temporariamente)
     localStorage.setItem('useMockData', JSON.stringify(useMock));
-    this.log('Mock data configurado para:', useMock);
   }
 
   setMockDelay(delay: number): void {
     this.config.mockDelay = delay;
-    this.log('Mock delay configurado para:', delay);
   }
 
   setApiBaseUrl(url: string): void {
     this.config.apiBaseUrl = url;
-    this.log('API Base URL configurado para:', url);
   }
 
   setLlmApiUrl(url: string): void {
     this.config.llmApiUrl = url;
-    this.log('LLM API URL configurado para:', url);
   }
 
   setLlmTimeout(timeout: number): void {
     this.config.llmTimeout = timeout;
-    this.log('LLM Timeout configurado para:', timeout);
   }
 
   // Restaura configuração do localStorage (sobrescreve .env se existir)
@@ -78,7 +73,6 @@ class ConfigManager {
     // Só aplica o valor salvo se a ENV NÃO estiver explicitamente definida
     if (savedUseMock !== null && envUseMockData === undefined) {
       this.config.useMockData = JSON.parse(savedUseMock);
-      this.log('Configuração carregada do localStorage');
     }
   }
 
@@ -86,25 +80,11 @@ class ConfigManager {
   reset(): void {
     this.config = { ...defaultConfig };
     localStorage.removeItem('useMockData');
-    this.log('Configuração resetada para valores do .env');
-  }
-
-  // Log condicional baseado em enableLogs
-  private log(...args: unknown[]): void {
-    if (this.config.enableLogs) {
-      console.log('[ConfigManager]', ...args);
-    }
   }
 
   // Exibe configuração atual no console
   printConfig(): void {
-    console.log('📋 Configuração Atual:', {
-      useMockData: this.config.useMockData,
-      mockDelay: this.config.mockDelay,
-      apiBaseUrl: this.config.apiBaseUrl,
-      enableLogs: this.config.enableLogs,
-      nodeEnv: this.config.nodeEnv,
-    });
+    // Configuração de logging removida
   }
 }
 
@@ -116,5 +96,4 @@ configManager.loadFromStorage();
 // Exibe configuração no console em desenvolvimento
 if (defaultConfig.nodeEnv === 'development') {
   configManager.printConfig();
-  console.log('💡 Dica: Para alterar configurações, edite o arquivo .env.development');
 }

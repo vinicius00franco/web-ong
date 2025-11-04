@@ -3,18 +3,13 @@ import { Link } from 'react-router-dom';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { useAuth } from '../contexts/AuthContext';
 import { useDashboardWidgets } from '../hooks/useDashboardWidgets';
-import {
-  useDonationsChart,
-  useVolunteersChart,
-  useProjectsStatus,
-  useDashboardStats,
-  useDashboardActivities,
-} from '../hooks/useDashboardData';
+import { useDashboard } from '../hooks/useDashboard';
 import DashboardWidget from '../components/DashboardWidget';
 import DashboardStats from '../components/DashboardStats';
 import DashboardSettings from '../components/DashboardSettings';
 import SwipeContainer from '../components/SwipeContainer';
 import { LineChart, BarChart } from '../components/SimpleChart';
+import { configManager } from '../config/app.config';
 
 const OngDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -27,12 +22,25 @@ const OngDashboard: React.FC = () => {
     resetWidgets,
   } = useDashboardWidgets();
 
-  // Hooks para dados do dashboard
-  const { data: donationsChartData } = useDonationsChart();
-  const { data: volunteersChartData } = useVolunteersChart();
-  const { projects: projectsStatus } = useProjectsStatus();
-  const { stats: dashboardStats } = useDashboardStats();
-  const { activities: dashboardActivities } = useDashboardActivities();
+  // Hook unificado do dashboard (evita múltiplas requisições e deprecations)
+  const {
+    donationsChart,
+    volunteersChart,
+    projectsStatus,
+    activities,
+    recentProducts,
+  } = useDashboard();
+
+  const isMock = configManager.getConfig().useMockData;
+
+  const asRecentDisplay = (p: any) => ({
+    id: String(p.id),
+    name: p.name,
+    category: p.category,
+    organization: 'organization' in p ? p.organization : '—',
+    price: 'price' in p ? Number(p.price) : 0,
+    createdAt: 'createdAt' in p ? p.createdAt : ('addedAt' in p ? p.addedAt : new Date().toISOString()),
+  });
 
   const [showSettings, setShowSettings] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -53,7 +61,9 @@ const OngDashboard: React.FC = () => {
       case 'recent-products':
         return (
           <div className="list-group list-group-flush">
-            {dashboardStats?.recentProducts.map(product => (
+            {(recentProducts || []).map(raw => {
+              const product = asRecentDisplay(raw);
+              return (
               <div key={product.id} className="list-group-item border-0 px-0">
                 <div className="d-flex align-items-center">
                   <div className="me-3" style={{ width: '50px', height: '50px', backgroundColor: '#f8f9fa', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -71,7 +81,8 @@ const OngDashboard: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
             <div className="text-center pt-3">
               <Link to="/ong/products" className="btn btn-sm btn-outline-primary">
                 Ver Todos os Produtos
@@ -87,18 +98,18 @@ const OngDashboard: React.FC = () => {
               <div>
                 <h6 className="text-muted mb-0">Total Arrecadado</h6>
                 <h3 className="mb-0">
-                  R$ {donationsChartData.reduce((sum, d) => sum + d.value, 0).toLocaleString('pt-BR')}
+                  R$ {(donationsChart || []).reduce((sum, d) => sum + d.value, 0).toLocaleString('pt-BR')}
                 </h3>
               </div>
               <span className="badge bg-success">
-                {donationsChartData.length >= 2
-                  ? `+${Math.round((donationsChartData[donationsChartData.length - 1].value / donationsChartData[donationsChartData.length - 2].value - 1) * 100)}% vs mês anterior`
+                {(donationsChart || []).length >= 2
+                  ? `+${Math.round(((donationsChart![donationsChart!.length - 1].value / donationsChart![donationsChart!.length - 2].value) - 1) * 100)}% vs mês anterior`
                   : '+0% vs mês anterior'
                 }
               </span>
             </div>
             <LineChart 
-              data={donationsChartData}
+              data={donationsChart || []}
               height={220}
               color="#198754"
               fillColor="rgba(25, 135, 84, 0.1)"
@@ -109,7 +120,7 @@ const OngDashboard: React.FC = () => {
       case 'activities':
         return (
           <div className="list-group list-group-flush" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {dashboardActivities.map(activity => {
+            {(activities || []).map(activity => {
               const timeAgo = (timestamp: string) => {
                 const now = new Date();
                 const activityDate = new Date(timestamp);
@@ -188,10 +199,10 @@ const OngDashboard: React.FC = () => {
           <div>
             <div className="mb-3">
               <h6 className="text-muted mb-0">Voluntários Ativos esta Semana</h6>
-              <h3 className="mb-0">{volunteersChartData.reduce((sum, d) => sum + d.value, 0)}</h3>
+              <h3 className="mb-0">{(volunteersChart || []).reduce((sum, d) => sum + d.value, 0)}</h3>
             </div>
             <BarChart 
-              data={volunteersChartData}
+              data={volunteersChart || []}
               height={200}
             />
           </div>
@@ -200,7 +211,7 @@ const OngDashboard: React.FC = () => {
       case 'projects-status':
         return (
           <div className="list-group list-group-flush">
-            {projectsStatus.map(project => (
+            {(projectsStatus || []).map(project => (
               <div key={project.id} className="list-group-item border-0 px-0">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <h6 className="mb-0">{project.name}</h6>
@@ -335,10 +346,12 @@ const OngDashboard: React.FC = () => {
       )}
 
       {/* Info sobre dados mockados */}
-      <div className="alert alert-info mt-4" role="alert">
-        <strong>ℹ️ Modo de Desenvolvimento:</strong> Os dados exibidos são mockados. 
-        Acesse a seção de <Link to="/ong/products" className="alert-link">Produtos</Link> para começar a gerenciar itens.
-      </div>
+      {isMock && (
+        <div className="alert alert-info mt-4" role="alert">
+          <strong>ℹ️ Modo de Desenvolvimento:</strong> Os dados exibidos são mockados.
+          Acesse a seção de <Link to="/ong/products" className="alert-link">Produtos</Link> para começar a gerenciar itens.
+        </div>
+      )}
 
       {/* Modal de Configurações */}
       {showSettings && (

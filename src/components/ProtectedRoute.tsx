@@ -12,19 +12,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   // Check token expiration before allowing access
   const isTokenExpired = checkTokenExpiration();
 
-  console.log('🛡️ ProtectedRoute verificando autenticação:', {
-    hasToken: !!token,
-    tokenPreview: token?.substring(0, 30) + '...',
-    isTokenExpired,
-    willRedirect: !token || isTokenExpired
-  });
-
   if (!token || isTokenExpired) {
-    console.warn('⚠️ ProtectedRoute: Token não encontrado ou expirado, redirecionando para /login');
     return <Navigate to="/login" replace />;
   }
 
-  console.log('✅ ProtectedRoute: Acesso autorizado');
   return <>{children}</>;
 };
 

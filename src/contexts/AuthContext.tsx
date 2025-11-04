@@ -36,11 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Log do estado atual
   React.useEffect(() => {
-    console.log('🔄 AuthContext estado atualizado:', {
-      isAuthenticated: !!token,
-      hasUser: !!user,
-      token: token?.substring(0, 20) + '...'
-    });
+    // Logging removed
   }, [token, user]);
 
   return (

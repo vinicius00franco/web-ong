@@ -35,7 +35,7 @@
     "role": "manager",
     "created_at": "2024-01-15T00:00:00Z"
   },
-  {
+    {
     "id": "user-005",
     "name": "João Santos",
     "email": "joao@ong.com",
@@ -43,5 +43,14 @@
     "organization_id": "org-001",
     "role": "volunteer",
     "created_at": "2024-01-20T00:00:00Z"
+  },
+  {
+    "id": "user-006",
+    "name": "Instituto do Bem",
+    "email": "institutodobem@ong.com",
+    "password": "password",
+    "organization_id": "org-003",
+    "role": "admin",
+    "created_at": "2024-01-25T00:00:00Z"
   }
 ]

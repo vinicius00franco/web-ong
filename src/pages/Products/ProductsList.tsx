@@ -14,13 +14,19 @@ export const ProductsList = () => {
   const { products, loading, error, fetchProducts, deleteProduct } = useProductsStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
 
   useEffect(() => {
-    // Fetch products only if not already loaded
-    if (products.length === 0 && !loading) {
+    // Fetch products only once when component mounts
+    if (!hasAttemptedLoad) {
       fetchProducts();
+      setHasAttemptedLoad(true);
     }
-  }, [products.length, loading, fetchProducts]);
+  }, [hasAttemptedLoad, fetchProducts]);
+
+  const handleRetryLoad = () => {
+    fetchProducts();
+  };
 
   const handleCreateProduct = () => {
     navigate(ROUTES.ONG.PRODUCTS_NEW);
@@ -49,7 +55,18 @@ export const ProductsList = () => {
   };
 
   if (error) {
-    return <ErrorMessage message={`Erro ao carregar produtos: ${error}`} />;
+    return (
+      <div className="text-center py-5">
+        <ErrorMessage message={`Erro ao carregar produtos: ${error}`} />
+        <button
+          className="btn btn-primary mt-3"
+          onClick={handleRetryLoad}
+          disabled={loading}
+        >
+          {loading ? 'Tentando novamente...' : 'Tentar Novamente'}
+        </button>
+      </div>
+    );
   }
 
   const breadcrumbs = [

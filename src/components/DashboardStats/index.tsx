@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDashboardStats } from '../../hooks/useDashboardStats';
+import { useDashboardStats } from '../../hooks/useDashboard';
 import StatCard from './StatCard';
 import SwipeContainer from '../SwipeContainer';
 import { ROUTES } from '../../config/routes';
