@@ -11,10 +11,10 @@ interface FormErrors {
   name?: string;
   description?: string;
   price?: string;
-  category?: string;
-  image_url?: string;
-  stock_qty?: string;
-  weight_grams?: string;
+  categoryId?: string;
+  imageUrl?: string;
+  stockQty?: string;
+  weightGrams?: string;
 }
 
 export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
@@ -22,10 +22,10 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
     name: '',
     description: '',
     price: 0,
-    category: '',
-    image_url: '',
-    stock_qty: 0,
-    weight_grams: 0,
+    categoryId: 0,
+    imageUrl: '',
+    stockQty: 0,
+    weightGrams: 0,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -49,20 +49,20 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
       newErrors.price = 'Preço deve ser um número válido';
     }
 
-    if (!formData.category.trim()) {
-      newErrors.category = 'Categoria é obrigatória';
+    if (!formData.categoryId || formData.categoryId <= 0) {
+      newErrors.categoryId = 'Categoria é obrigatória';
     }
 
-    if (!formData.image_url.trim()) {
-      newErrors.image_url = 'URL da imagem é obrigatória';
+    if (!formData.imageUrl.trim()) {
+      newErrors.imageUrl = 'URL da imagem é obrigatória';
     }
 
-    if (!formData.stock_qty || formData.stock_qty < 0) {
-      newErrors.stock_qty = 'Quantidade em estoque é obrigatória';
+    if (!formData.stockQty || formData.stockQty < 0) {
+      newErrors.stockQty = 'Quantidade em estoque é obrigatória';
     }
 
-    if (!formData.weight_grams || formData.weight_grams <= 0) {
-      newErrors.weight_grams = 'Peso é obrigatório';
+    if (!formData.weightGrams || formData.weightGrams <= 0) {
+      newErrors.weightGrams = 'Peso é obrigatório';
     }
 
     setErrors(newErrors);
@@ -150,56 +150,56 @@ export const ProductForm = ({ onSuccess, onCancel }: ProductFormProps) => {
         <label htmlFor="category" className="form-label">Categoria</label>
         <input
           id="category"
-          type="text"
+          type="number"
           className="form-control"
-          value={formData.category}
-          onChange={(e) => handleChange('category', e.target.value)}
-          aria-invalid={!!errors.category}
-          aria-describedby="category-error"
+          value={formData.categoryId || ''}
+          onChange={(e) => handleChange('categoryId', parseInt(e.target.value) || 0)}
+          aria-invalid={!!errors.categoryId}
+          aria-describedby="categoryId-error"
         />
-        {errors.category && <div id="category-error" className="text-danger" role="alert">{errors.category}</div>}
+        {errors.categoryId && <div id="categoryId-error" className="text-danger" role="alert">{errors.categoryId}</div>}
       </div>
 
       <div className="mb-3">
-        <label htmlFor="image_url" className="form-label">URL da Imagem</label>
+        <label htmlFor="imageUrl" className="form-label">URL da Imagem</label>
         <input
-          id="image_url"
+          id="imageUrl"
           type="url"
           className="form-control"
-          value={formData.image_url}
-          onChange={(e) => handleChange('image_url', e.target.value)}
-          aria-invalid={!!errors.image_url}
-          aria-describedby="image_url-error"
+          value={formData.imageUrl}
+          onChange={(e) => handleChange('imageUrl', e.target.value)}
+          aria-invalid={!!errors.imageUrl}
+          aria-describedby="imageUrl-error"
         />
-        {errors.image_url && <div id="image_url-error" className="text-danger" role="alert">{errors.image_url}</div>}
+        {errors.imageUrl && <div id="imageUrl-error" className="text-danger" role="alert">{errors.imageUrl}</div>}
       </div>
 
       <div className="mb-3">
-        <label htmlFor="stock_qty" className="form-label">Quantidade em Estoque</label>
+        <label htmlFor="stockQty" className="form-label">Quantidade em Estoque</label>
         <input
-          id="stock_qty"
+          id="stockQty"
           type="number"
           className="form-control"
-          value={formData.stock_qty || ''}
-          onChange={(e) => handleChange('stock_qty', parseInt(e.target.value) || 0)}
-          aria-invalid={!!errors.stock_qty}
-          aria-describedby="stock_qty-error"
+          value={formData.stockQty || ''}
+          onChange={(e) => handleChange('stockQty', parseInt(e.target.value) || 0)}
+          aria-invalid={!!errors.stockQty}
+          aria-describedby="stockQty-error"
         />
-        {errors.stock_qty && <div id="stock_qty-error" className="text-danger" role="alert">{errors.stock_qty}</div>}
+        {errors.stockQty && <div id="stockQty-error" className="text-danger" role="alert">{errors.stockQty}</div>}
       </div>
 
       <div className="mb-3">
-        <label htmlFor="weight_grams" className="form-label">Peso em Gramas</label>
+        <label htmlFor="weightGrams" className="form-label">Peso em Gramas</label>
         <input
-          id="weight_grams"
+          id="weightGrams"
           type="number"
           className="form-control"
-          value={formData.weight_grams || ''}
-          onChange={(e) => handleChange('weight_grams', parseInt(e.target.value) || 0)}
-          aria-invalid={!!errors.weight_grams}
-          aria-describedby="weight_grams-error"
+          value={formData.weightGrams || ''}
+          onChange={(e) => handleChange('weightGrams', parseInt(e.target.value) || 0)}
+          aria-invalid={!!errors.weightGrams}
+          aria-describedby="weightGrams-error"
         />
-        {errors.weight_grams && <div id="weight_grams-error" className="text-danger" role="alert">{errors.weight_grams}</div>}
+        {errors.weightGrams && <div id="weightGrams-error" className="text-danger" role="alert">{errors.weightGrams}</div>}
       </div>
 
       {submitError && <div className="alert alert-danger">Erro ao salvar produto: {submitError}</div>}

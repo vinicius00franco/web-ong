@@ -19,7 +19,7 @@ interface DashboardState {
   reset: () => void;
 }
 
-export const useDashboardStore = create<DashboardState>((set, get) => ({
+export const useDashboardStore = create<DashboardState>((set) => ({
   // Initial state
   data: null,
   stats: null,

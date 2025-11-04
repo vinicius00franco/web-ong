@@ -1,17 +1,6 @@
 import type { User } from '../../types/entities';
 import type { UserFilters, UsersResponse, CreateUserData, UpdateUserData } from '../../types/user';
 
-// Tipo local para dados mock que podem ter role como string
-interface MockUserData {
-  id: string;
-  name: string;
-  email: string;
-  password?: string;
-  organization_id: string;
-  role: string;
-  created_at: string;
-}
-
 import usersData from '../data/users.mock.json';
 import { configManager } from '../../config/app.config';
 

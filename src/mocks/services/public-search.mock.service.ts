@@ -26,7 +26,24 @@ function simpleInterpret(query: string): SearchInterpretation | undefined {
 }
 
 class MockPublicSearchService {
-  private products: Product[] = [...productsData]
+  private products: Product[] = this.normalizeProducts(productsData)
+
+  private normalizeProducts(data: any[]): Product[] {
+    return data.map(p => ({
+      id: String(p.id),
+      name: p.name,
+      description: p.description ?? '',
+      price: typeof p.price === 'string' ? parseFloat(p.price) : p.price,
+      category: p.category ?? undefined,
+      categoryId: p.categoryId ?? p.category_id ?? 0,
+      imageUrl: p.imageUrl ?? p.image_url ?? '',
+      stockQty: p.stockQty ?? p.stock_qty ?? 0,
+      weightGrams: p.weightGrams ?? p.weight_grams ?? 0,
+      organizationId: p.organizationId ?? p.organization_id ?? '',
+      createdAt: p.createdAt ?? p.created_at ?? new Date().toISOString(),
+      updatedAt: p.updatedAt ?? p.updated_at ?? undefined,
+    }))
+  }
 
   async search(query: string): Promise<PublicSearchResponse> {
     await simulateDelay()
@@ -39,7 +56,7 @@ class MockPublicSearchService {
     let results = [...this.products]
 
     if (interpretation?.category) {
-      results = results.filter(p => p.category.toLowerCase() === interpretation.category?.toLowerCase())
+      results = results.filter(p => (p.category ?? '').toLowerCase() === interpretation.category?.toLowerCase())
     }
     if (typeof interpretation?.priceMax === 'number') {
       results = results.filter(p => p.price <= (interpretation.priceMax as number))

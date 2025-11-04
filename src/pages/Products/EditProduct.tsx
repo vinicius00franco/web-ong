@@ -85,10 +85,10 @@ const EditProductForm = ({ product, onSuccess, onCancel }: EditProductFormProps)
     name: product.name,
     description: product.description,
     price: product.price,
-    category: product.category,
-    image_url: product.image_url,
-    stock_qty: product.stock_qty,
-    weight_grams: product.weight_grams,
+    categoryId: product.categoryId,
+    imageUrl: product.imageUrl,
+    stockQty: product.stockQty,
+    weightGrams: product.weightGrams,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -110,20 +110,20 @@ const EditProductForm = ({ product, onSuccess, onCancel }: EditProductFormProps)
       newErrors.price = 'Preço é obrigatório';
     }
 
-    if (!formData.category?.trim()) {
-      newErrors.category = 'Categoria é obrigatória';
+    if (!formData.categoryId || formData.categoryId <= 0) {
+      newErrors.categoryId = 'Categoria é obrigatória';
     }
 
-    if (!formData.image_url?.trim()) {
-      newErrors.image_url = 'URL da imagem é obrigatória';
+    if (!formData.imageUrl?.trim()) {
+      newErrors.imageUrl = 'URL da imagem é obrigatória';
     }
 
-    if (!formData.stock_qty || formData.stock_qty < 0) {
-      newErrors.stock_qty = 'Quantidade em estoque é obrigatória';
+    if (!formData.stockQty || formData.stockQty < 0) {
+      newErrors.stockQty = 'Quantidade em estoque é obrigatória';
     }
 
-    if (!formData.weight_grams || formData.weight_grams <= 0) {
-      newErrors.weight_grams = 'Peso é obrigatório';
+    if (!formData.weightGrams || formData.weightGrams <= 0) {
+      newErrors.weightGrams = 'Peso é obrigatório';
     }
 
     setErrors(newErrors);
@@ -206,44 +206,44 @@ const EditProductForm = ({ product, onSuccess, onCancel }: EditProductFormProps)
         <label htmlFor="category">Categoria</label>
         <input
           id="category"
-          type="text"
-          value={formData.category || ''}
-          onChange={(e) => handleChange('category', e.target.value)}
+          type="number"
+          value={formData.categoryId || ''}
+          onChange={(e) => handleChange('categoryId', parseInt(e.target.value) || 0)}
         />
-        {errors.category && <span>{errors.category}</span>}
+        {errors.categoryId && <span>{errors.categoryId}</span>}
       </div>
 
       <div>
-        <label htmlFor="image_url">URL da Imagem</label>
+        <label htmlFor="imageUrl">URL da Imagem</label>
         <input
-          id="image_url"
+          id="imageUrl"
           type="url"
-          value={formData.image_url || ''}
-          onChange={(e) => handleChange('image_url', e.target.value)}
+          value={formData.imageUrl || ''}
+          onChange={(e) => handleChange('imageUrl', e.target.value)}
         />
-        {errors.image_url && <span>{errors.image_url}</span>}
+        {errors.imageUrl && <span>{errors.imageUrl}</span>}
       </div>
 
       <div>
-        <label htmlFor="stock_qty">Quantidade em Estoque</label>
+        <label htmlFor="stockQty">Quantidade em Estoque</label>
         <input
-          id="stock_qty"
+          id="stockQty"
           type="number"
-          value={formData.stock_qty || ''}
-          onChange={(e) => handleChange('stock_qty', parseInt(e.target.value) || 0)}
+          value={formData.stockQty || ''}
+          onChange={(e) => handleChange('stockQty', parseInt(e.target.value) || 0)}
         />
-        {errors.stock_qty && <span>{errors.stock_qty}</span>}
+        {errors.stockQty && <span>{errors.stockQty}</span>}
       </div>
 
       <div>
-        <label htmlFor="weight_grams">Peso em Gramas</label>
+        <label htmlFor="weightGrams">Peso em Gramas</label>
         <input
-          id="weight_grams"
+          id="weightGrams"
           type="number"
-          value={formData.weight_grams || ''}
-          onChange={(e) => handleChange('weight_grams', parseInt(e.target.value) || 0)}
+          value={formData.weightGrams || ''}
+          onChange={(e) => handleChange('weightGrams', parseInt(e.target.value) || 0)}
         />
-        {errors.weight_grams && <span>{errors.weight_grams}</span>}
+        {errors.weightGrams && <span>{errors.weightGrams}</span>}
       </div>
 
       {submitError && <div>Erro ao atualizar produto: {submitError}</div>}

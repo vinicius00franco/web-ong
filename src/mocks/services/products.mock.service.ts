@@ -21,7 +21,24 @@ const generateId = (): string => {
  * Service de produtos mockados
  */
 class MockProductsService {
-  private products: Product[] = [...productsData];
+  private products: Product[] = this.normalizeProducts(productsData);
+
+  private normalizeProducts(data: any[]): Product[] {
+    return data.map(p => ({
+      id: String(p.id),
+      name: p.name,
+      description: p.description ?? '',
+      price: typeof p.price === 'string' ? parseFloat(p.price) : p.price,
+      category: p.category ?? undefined,
+      categoryId: p.categoryId ?? p.category_id ?? 0,
+      imageUrl: p.imageUrl ?? p.image_url ?? '',
+      stockQty: p.stockQty ?? p.stock_qty ?? 0,
+      weightGrams: p.weightGrams ?? p.weight_grams ?? 0,
+      organizationId: p.organizationId ?? p.organization_id ?? '',
+      createdAt: p.createdAt ?? p.created_at ?? new Date().toISOString(),
+      updatedAt: p.updatedAt ?? p.updated_at ?? undefined,
+    }));
+  }
 
   async getProducts(filters: ProductFilters = {}): Promise<ProductsResponse> {
     await simulateDelay();
@@ -29,9 +46,9 @@ class MockProductsService {
     let filtered = [...this.products];
 
     // Filtro por categoria
-    if (filters.category) {
+    if (filters.categoryId) {
       filtered = filtered.filter(p => 
-        p.category.toLowerCase() === filters.category?.toLowerCase()
+        p.categoryId === filters.categoryId
       );
     }
 
@@ -76,9 +93,9 @@ class MockProductsService {
     const newProduct: Product = {
       ...productData,
       id: generateId(),
-      organization_id: 'org-001', // Fixo para mock
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      organizationId: 'org-001', // Fixo para mock
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     this.products.push(newProduct);
@@ -97,7 +114,7 @@ class MockProductsService {
     const updatedProduct: Product = {
       ...this.products[index],
       ...updateData,
-      updated_at: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     this.products[index] = updatedProduct;
@@ -117,7 +134,7 @@ class MockProductsService {
 
   // Método para resetar dados ao estado inicial
   reset(): void {
-    this.products = [...productsData];
+    this.products = this.normalizeProducts(productsData);
   }
 }
 
