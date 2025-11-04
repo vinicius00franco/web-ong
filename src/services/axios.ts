@@ -28,10 +28,15 @@ axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 // Interceptor para adicionar token de autenticação automaticamente
 axios.interceptors.request.use((config) => {
-  // Get token from Zustand store instead of localStorage
-  const { token } = useAuthStore.getState();
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
+  // Don't attach auth for public endpoints
+  const url = config.url || '';
+  const isPublic = url.startsWith('/api/public/') || url.startsWith('/public/');
+
+  if (!isPublic) {
+    const { token } = useAuthStore.getState();
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
@@ -43,18 +48,20 @@ axios.interceptors.response.use(
     // Silent axios error interceptor (logs removidos)
 
     if (error.response?.status === 401) {
-      const { checkTokenExpiration } = useAuthStore.getState();
+      const { token, checkTokenExpiration, logout } = useAuthStore.getState();
 
-      // Only logout if token is actually expired, not just any 401 error
+      // If there's no token, this was an unauthenticated request (public endpoint)
+      // — don't force a logout/redirect. Let the caller handle the error.
+      if (!token) {
+        return Promise.reject(error);
+      }
+
+      // If there's a token, only logout when it's actually expired
       if (checkTokenExpiration()) {
-        // Clear auth state
-        useAuthStore.getState().logout();
-        // Redirect to login
+        logout();
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }
-      } else {
-        // Don't logout, just reject the promise
       }
     }
     return Promise.reject(error);
